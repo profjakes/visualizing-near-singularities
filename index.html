@@ -412,11 +412,6 @@
     </div>
     <div id="laurent-formula" style="display:none;border:1px solid var(--border);border-radius:4px;padding:0.7rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent);line-height:1.8;"></div>
 
-    <div class="info-panel" id="info-panel">
-      <h2>Singularity type</h2>
-      <div id="info-content"></div>
-    </div>
-
     <div class="live-panel">
       <h2>Live readout</h2>
       <div class="play-row">
@@ -439,6 +434,11 @@
       <div class="live-row"><span class="live-key">X (sphere)</span><span class="live-val blue" id="lv-X">—</span></div>
       <div class="live-row"><span class="live-key">Y (sphere)</span><span class="live-val blue" id="lv-Y">—</span></div>
       <div class="live-row"><span class="live-key">Z (sphere)</span><span class="live-val blue" id="lv-Z">—</span></div>
+    </div>
+
+    <div class="info-panel" id="info-panel">
+      <h2>Singularity type</h2>
+      <div id="info-content"></div>
     </div>
 
     <div class="legend-panel">
@@ -508,7 +508,12 @@ const FNS = {
   exp: ([x,y]) => {
     const r2=x*x+y*y; if(r2<1e-22)return null;
     const ri=x/r2, ii=-y/r2;
-    const mag=Math.exp(Math.max(-20,Math.min(20,ri)));
+    const mag=Math.exp(ri);
+    if(!isFinite(mag)) {
+      // f(z) → ∞: return a huge value in the right direction so safeStero → north pole
+      const scale=1e15;
+      return [scale*Math.cos(ii), scale*Math.sin(ii)];
+    }
     return [mag*Math.cos(ii), mag*Math.sin(ii)];
   },
   // Laurent truncation: sum_{k=0}^{N} 1/(k! z^k), computed via complex arithmetic
@@ -541,6 +546,15 @@ const FNS = {
 function clamp(x,y,lim=22) {
   const r=Math.sqrt(x*x+y*y);
   return r>lim ? [x*lim/r, y*lim/r] : [x,y];
+}
+
+// Stereographic projection that handles arbitrarily large w without clamping.
+// For large |w|, approaches north pole (0,0,1) smoothly.
+function safeStero(wx, wy) {
+  const r2 = wx*wx + wy*wy;
+  // standard formula — works for any finite r2, including very large
+  const d = 1 + r2;
+  return [2*wx/d, 2*wy/d, (r2-1)/d];
 }
 
 function stereo(x,y) {
@@ -653,8 +667,7 @@ function drawImagePath(fnKey, spiral, tilt, spin) {
   for(const [zx,zy] of spiral) {
     const w=fn([zx,zy]);
     if(!w) continue;
-    const [wx,wy]=clamp(w[0],w[1],22);
-    pts3D.push(stereo(wx,wy));
+    pts3D.push(safeStero(w[0], w[1]));
   }
   if(pts3D.length<2) return;
 
@@ -808,8 +821,8 @@ function pointAtT(t) {
   const w = fn([zx, zy]);
   let wx = null, wy = null, sph = null;
   if (w) {
-    [wx, wy] = clamp(w[0], w[1], 22);
-    sph = stereo(wx, wy);
+    [wx, wy] = [w[0], w[1]];
+    sph = safeStero(wx, wy);
   }
   return { t, zx, zy, r, angle, wx, wy, sph };
 }
