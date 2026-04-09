@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riemann Sphere — Singularity Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0e0e0c;
+    --surface:  #161614;
+    --border:   #2a2a26;
+    --text:     #d8d5c8;
+    --muted:    #6a6860;
+    --accent:   #c8a96e;
+    --spiral:   #e06040;
+    --image:    #5a9fd4;
+    --north:    #6bbfa0;
+    --south:    #c8a96e;
+    --grid:     #222220;
+    --sphere-fill: #1a1a18;
+    --sphere-rim:  #303030;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 3rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+    max-width: 680px;
+  }
+
+  h1 {
+    font-size: 1.9rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 960px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .canvas-wrap {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg);
+    position: relative;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .ctrl-group {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1rem 0.9rem;
+  }
+
+  .ctrl-group h2 {
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .fn-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.5rem 0.7rem;
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'EB Garamond', serif;
+    font-size: 0.95rem;
+    transition: border-color 0.15s, background 0.15s;
+    line-height: 1.35;
+  }
+
+  .fn-btn:last-child { margin-bottom: 0; }
+
+  .fn-btn .math {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    margin-bottom: 0.15rem;
+  }
+
+  .fn-btn .type {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .fn-btn:hover {
+    border-color: var(--accent);
+    background: rgba(200, 169, 110, 0.05);
+  }
+
+  .fn-btn.active {
+    border-color: var(--accent);
+    background: rgba(200, 169, 110, 0.08);
+  }
+
+  .fn-btn.active .math { color: #e8c880; }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .slider-row:last-child { margin-bottom: 0; }
+
+  .slider-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .slider-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 1px;
+    background: var(--border);
+    border-radius: 1px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+  }
+
+  .info-panel {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+
+  .info-panel h2 {
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .sing-type {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 2px;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+  }
+  .pole    { background: rgba(90,159,212,0.15); color: var(--image); border: 1px solid rgba(90,159,212,0.3); }
+  .ess     { background: rgba(224,96,64,0.15);  color: var(--spiral); border: 1px solid rgba(224,96,64,0.3); }
+  .branch  { background: rgba(200,169,110,0.15); color: var(--accent); border: 1px solid rgba(200,169,110,0.3); }
+
+  .info-desc {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .legend-panel {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+  }
+
+  .legend-panel h2 {
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  .legend-line {
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-dash {
+    width: 22px; height: 0;
+    border-top: 2px dashed;
+    flex-shrink: 0;
+  }
+
+  .live-panel {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+  }
+  .live-panel h2 {
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+  }
+  .live-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+    font-size: 0.72rem;
+  }
+  .live-key {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+  .live-val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    text-align: right;
+  }
+  .live-val.blue { color: var(--image); }
+  .play-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+  }
+  #play-btn {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    font-size: 12px;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  #play-btn:hover { border-color: var(--accent); background: rgba(200,169,110,0.08); }
+  #scrub {
+    flex: 1;
+    accent-color: var(--image);
+  }
+  .speed-row {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .speed-row input { flex:1; accent-color: var(--accent); }
+  .speed-val { font-family:'JetBrains Mono',monospace; color:var(--accent); width:28px; text-align:right; }
+
+  @media (max-width: 700px) {
+    .container { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Riemann Sphere — Singularity Explorer</h1>
+  <p class="subtitle">A spiral path approaching the origin in ℂ, and its image under f mapped to the sphere via stereographic projection.</p>
+</header>
+
+<div class="container">
+  <div class="canvas-wrap">
+    <canvas id="c" width="640" height="620"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="ctrl-group">
+      <h2>Function</h2>
+      <button class="fn-btn active" data-fn="inv1">
+        <span class="math">f(z) = 1/z</span>
+        <span class="type">Simple pole, order 1</span>
+      </button>
+      <button class="fn-btn" data-fn="inv4">
+        <span class="math">f(z) = 1/z⁴</span>
+        <span class="type">Pole, order 4</span>
+      </button>
+      <button class="fn-btn" data-fn="inv20">
+        <span class="math">f(z) = 1/z²⁰</span>
+        <span class="type">Pole, order 20</span>
+      </button>
+      <button class="fn-btn" data-fn="exp">
+        <span class="math">f(z) = e^(1/z)</span>
+        <span class="type">Essential singularity</span>
+      </button>
+      <button class="fn-btn" data-fn="laurent">
+        <span class="math">f(z) = Σ 1/(k! zᵏ)</span>
+        <span class="type">Laurent truncation of e^(1/z)</span>
+      </button>
+      <button class="fn-btn" data-fn="log">
+        <span class="math">f(z) = Log(z)</span>
+        <span class="type">Branch point</span>
+      </button>
+    </div>
+
+    <div class="ctrl-group">
+      <h2>Parameters</h2>
+      <div class="slider-row">
+        <span class="slider-label">Turns</span>
+        <input type="range" id="turns" min="1" max="7" step="0.5" value="3">
+        <span class="slider-val" id="turns-out">3</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Tilt</span>
+        <input type="range" id="tilt" min="-75" max="75" value="-28">
+        <span class="slider-val" id="tilt-out">28°</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Spin</span>
+        <input type="range" id="spin" min="-60" max="60" value="20">
+        <span class="slider-val" id="spin-out">20°</span>
+      </div>
+      <div class="slider-row" id="terms-row" style="display:none;border-top:1px solid var(--border);padding-top:0.6rem;margin-top:0.4rem">
+        <span class="slider-label">Terms N</span>
+        <input type="range" id="terms" min="1" max="20" step="1" value="3">
+        <span class="slider-val" id="terms-out">3</span>
+      </div>
+    </div>
+    <div id="laurent-formula" style="display:none;border:1px solid var(--border);border-radius:4px;padding:0.7rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent);line-height:1.8;"></div>
+
+    <div class="info-panel" id="info-panel">
+      <h2>Singularity type</h2>
+      <div id="info-content"></div>
+    </div>
+
+    <div class="live-panel">
+      <h2>Live readout</h2>
+      <div class="play-row">
+        <button id="play-btn" title="Play/Pause">&#9654;</button>
+        <input type="range" id="scrub" min="0" max="1000" value="0" step="1" style="flex:1">
+      </div>
+      <div class="speed-row">
+        <span>Speed</span>
+        <input type="range" id="speed" min="1" max="20" value="6" step="1">
+        <span class="speed-val" id="speed-out">6</span>
+      </div>
+      <div class="live-row"><span class="live-key">t</span><span class="live-val" id="lv-t">—</span></div>
+      <div class="live-row"><span class="live-key">|z|</span><span class="live-val" id="lv-r">—</span></div>
+      <div class="live-row"><span class="live-key">arg(z)</span><span class="live-val" id="lv-arg">—</span></div>
+      <div class="live-row"><span class="live-key">z</span><span class="live-val" id="lv-z">—</span></div>
+      <div style="border-top:1px solid var(--border);margin:6px 0"></div>
+      <div class="live-row"><span class="live-key">f(z)</span><span class="live-val blue" id="lv-fz">—</span></div>
+      <div class="live-row"><span class="live-key">|f(z)|</span><span class="live-val blue" id="lv-fmod">—</span></div>
+      <div style="border-top:1px solid var(--border);margin:6px 0"></div>
+      <div class="live-row"><span class="live-key">X (sphere)</span><span class="live-val blue" id="lv-X">—</span></div>
+      <div class="live-row"><span class="live-key">Y (sphere)</span><span class="live-val blue" id="lv-Y">—</span></div>
+      <div class="live-row"><span class="live-key">Z (sphere)</span><span class="live-val blue" id="lv-Z">—</span></div>
+    </div>
+
+    <div class="legend-panel">
+      <h2>Legend</h2>
+      <div class="legend-item"><div class="legend-line" style="background:var(--spiral)"></div> Input spiral z(t) → 0</div>
+      <div class="legend-item"><div class="legend-dash" style="border-color:var(--image)"></div> Image f(z(t)) on sphere</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--north)"></div> North pole = ∞</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--south)"></div> South pole = 0</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = 640, H = 620;
+canvas.width = W; canvas.height = H;
+
+const COL = {
+  bg:      '#0e0e0c',
+  sphere:  '#1a1a18',
+  rim:     '#2e2e2a',
+  grid:    '#222220',
+  grid2:   '#1e1e1c',
+  spiral:  '#e06040',
+  image:   '#5a9fd4',
+  north:   '#6bbfa0',
+  south:   '#c8a96e',
+  text:    '#d8d5c8',
+  muted:   '#5a5850',
+  accent:  '#c8a96e',
+  axis:    '#2a2a26',
+};
+
+// Sphere center & radius — leave room for inset below
+const CX = 300, CY = 290, R = 220;
+
+const INFOS = {
+  inv1:  { cls: 'pole', label: 'Simple pole (order 1)',
+    desc: 'As z → 0 along the spiral, f(z) = 1/z → ∞. The image path spirals neatly up toward the north pole (∞), converging to it along a well-defined limiting direction. The limit exists on the Riemann sphere.' },
+  inv4:  { cls: 'pole', label: 'Pole of order 4',
+    desc: 'Each full loop of the input generates 4 loops of the image. The image still converges to ∞ (north pole), but winds around it much faster — the order of the pole controls the winding ratio.' },
+  inv20: { cls: 'pole', label: 'Pole of order 20',
+    desc: 'Each input loop generates 20 image loops. The image frantically orbits the north pole but still converges there. Any pole, regardless of order, gives a well-defined limit ∞ on the Riemann sphere.' },
+  exp:   { cls: 'ess', label: 'Essential singularity',
+    desc: 'By Picard\'s theorem, e^(1/z) takes every value in ℂ (except possibly one) in any punctured neighborhood of 0. The image does not converge — it fills the sphere chaotically. No limit exists, not even ∞.' },
+  laurent: { cls: 'ess', label: 'Laurent truncation of e^(1/z)',
+    desc: 'The N-term partial sum is a rational function with a pole of order N at 0 — so for any finite N, the image converges to ∞. But as N → ∞ the pole order grows without bound and the limit becomes the essential singularity. Watch the image path grow wilder as you add terms, interpolating between a tame pole and the chaotic essential singularity.' },
+  log:   { cls: 'branch', label: 'Branch point',
+    desc: 'Log(z) is not single-valued: each loop around 0 shifts the image by 2πi. The image climbs the imaginary axis indefinitely, spiraling toward a band on the sphere rather than a point. The singularity is of a different character — not a pole, but a failure of single-valuedness.' },
+};
+
+const FNS = {
+  inv1:  ([x,y]) => { const r2=x*x+y*y; if(r2<1e-22)return null; return [x/r2,-y/r2]; },
+  inv4:  ([x,y]) => {
+    let re=x,im=y;
+    for(let i=0;i<3;i++){const nr=re*x-im*y;im=re*y+im*x;re=nr;}
+    const r2=re*re+im*im; if(r2<1e-30)return null;
+    return [re/r2,-im/r2];
+  },
+  inv20: ([x,y]) => {
+    let re=x,im=y;
+    for(let i=0;i<19;i++){const nr=re*x-im*y;im=re*y+im*x;re=nr;}
+    const r2=re*re+im*im; if(r2<1e-30)return null;
+    return [re/r2,-im/r2];
+  },
+  exp: ([x,y]) => {
+    const r2=x*x+y*y; if(r2<1e-22)return null;
+    const ri=x/r2, ii=-y/r2;
+    const mag=Math.exp(Math.max(-20,Math.min(20,ri)));
+    return [mag*Math.cos(ii), mag*Math.sin(ii)];
+  },
+  // Laurent truncation: sum_{k=0}^{N} 1/(k! z^k), computed via complex arithmetic
+  laurent: ([x,y]) => {
+    const N=state.terms;
+    const r2=x*x+y*y; if(r2<1e-22)return null;
+    // 1/z
+    const invRe=x/r2, invIm=-y/r2;
+    // accumulate sum and current power (1/z)^k / k!
+    let sumRe=1, sumIm=0; // k=0 term
+    let powRe=invRe, powIm=invIm; // (1/z)^1
+    let fact=1;
+    for(let k=1;k<=N;k++){
+      fact*=k;
+      sumRe+=powRe/fact;
+      sumIm+=powIm/fact;
+      // next power: multiply by (1/z)
+      const nr=powRe*invRe-powIm*invIm;
+      powIm=powRe*invIm+powIm*invRe;
+      powRe=nr;
+    }
+    return [sumRe, sumIm];
+  },
+  log: ([x,y]) => {
+    if(x*x+y*y<1e-22)return null;
+    return [0.5*Math.log(x*x+y*y), Math.atan2(y,x)];
+  },
+};
+
+function clamp(x,y,lim=22) {
+  const r=Math.sqrt(x*x+y*y);
+  return r>lim ? [x*lim/r, y*lim/r] : [x,y];
+}
+
+function stereo(x,y) {
+  const r2=x*x+y*y, d=1+r2;
+  return [2*x/d, 2*y/d, (r2-1)/d];
+}
+
+function project3D(X,Y,Z, tiltDeg, spinDeg) {
+  const t=tiltDeg*Math.PI/180, s=spinDeg*Math.PI/180;
+  // Spin around Z
+  const X1=X*Math.cos(s)-Y*Math.sin(s);
+  const Y1=X*Math.sin(s)+Y*Math.cos(s);
+  // Tilt around X
+  const Y2=Y1*Math.cos(t)-Z*Math.sin(t);
+  const Z2=Y1*Math.sin(t)+Z*Math.cos(t);
+  return [CX+R*X1, CY-R*Y2, Z2];
+}
+
+function drawSphere(tilt, spin) {
+  ctx.fillStyle = COL.bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Sphere fill
+  const grad = ctx.createRadialGradient(CX-40,CY-50,20,CX,CY,R);
+  grad.addColorStop(0,'#252522');
+  grad.addColorStop(1,'#111110');
+  ctx.beginPath();
+  ctx.arc(CX,CY,R,0,2*Math.PI);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.strokeStyle = COL.rim;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Grid lines
+  // Latitudes
+  for(let lat=-75; lat<=75; lat+=15) {
+    const phi=lat*Math.PI/180, rLat=Math.cos(phi), zLat=Math.sin(phi);
+    // determine if this latitude is major
+    const major = lat%30===0;
+    ctx.strokeStyle = major ? '#252523' : COL.grid;
+    ctx.lineWidth = major ? 0.7 : 0.4;
+    ctx.beginPath();
+    let first=true;
+    for(let lam=0;lam<=360;lam+=3) {
+      const a=lam*Math.PI/180;
+      const [px,py,pz]=project3D(rLat*Math.cos(a),rLat*Math.sin(a),zLat,tilt,spin);
+      if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+
+  // Longitudes
+  for(let lam=0;lam<180;lam+=15) {
+    const a=lam*Math.PI/180;
+    const major = lam%30===0;
+    ctx.strokeStyle = major ? '#252523' : COL.grid;
+    ctx.lineWidth = major ? 0.7 : 0.4;
+    ctx.beginPath();
+    let first=true;
+    for(let lat2=-90;lat2<=90;lat2+=3) {
+      const phi=lat2*Math.PI/180;
+      const [px,py]=project3D(Math.cos(phi)*Math.cos(a),Math.cos(phi)*Math.sin(a),Math.sin(phi),tilt,spin);
+      if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+
+  // Equator highlight
+  ctx.strokeStyle = '#30302c';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  let fst=true;
+  for(let lam=0;lam<=360;lam+=3) {
+    const a=lam*Math.PI/180;
+    const [px,py]=project3D(Math.cos(a),Math.sin(a),0,tilt,spin);
+    if(fst){ctx.moveTo(px,py);fst=false;}else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  // Poles
+  const [npx,npy]=project3D(0,0,1,tilt,spin).slice(0,2);
+  ctx.beginPath(); ctx.arc(npx,npy,5,0,2*Math.PI);
+  ctx.fillStyle=COL.north; ctx.fill();
+  ctx.font='13px "EB Garamond",serif';
+  ctx.fillStyle=COL.north;
+  ctx.fillText('∞',npx+8,npy+4);
+
+  const [spx,spy]=project3D(0,0,-1,tilt,spin).slice(0,2);
+  ctx.beginPath(); ctx.arc(spx,spy,5,0,2*Math.PI);
+  ctx.fillStyle=COL.south; ctx.fill();
+  ctx.fillStyle=COL.south;
+  ctx.fillText('0',spx+8,spy+4);
+}
+
+function buildSpiral(turns, steps=800) {
+  const pts=[];
+  for(let i=0;i<=steps;i++) {
+    const t=i/steps;
+    const angle=turns*2*Math.PI*t;
+    const r=(1-t)*0.92+0.025;
+    pts.push([r*Math.cos(-angle), r*Math.sin(-angle)]);
+  }
+  return pts;
+}
+
+function drawImagePath(fnKey, spiral, tilt, spin) {
+  const fn=FNS[fnKey];
+  const pts3D=[];
+  for(const [zx,zy] of spiral) {
+    const w=fn([zx,zy]);
+    if(!w) continue;
+    const [wx,wy]=clamp(w[0],w[1],22);
+    pts3D.push(stereo(wx,wy));
+  }
+  if(pts3D.length<2) return;
+
+  // Draw with depth-based opacity
+  ctx.lineWidth=1.8;
+  ctx.setLineDash([5,4]);
+  ctx.strokeStyle=COL.image;
+
+  ctx.beginPath();
+  let drawing=false;
+  for(let i=0;i<pts3D.length;i++) {
+    const [px,py,pz]=project3D(...pts3D[i],tilt,spin);
+    ctx.globalAlpha = pz < -0.15 ? 0.2 : (pz < 0.1 ? 0.5 : 1.0);
+    if(!drawing){ctx.moveTo(px,py);drawing=true;}
+    else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  ctx.globalAlpha=1;
+  ctx.setLineDash([]);
+
+  // Endpoint
+  const last=pts3D[pts3D.length-1];
+  const [ex,ey]=project3D(...last,tilt,spin).slice(0,2);
+  ctx.beginPath(); ctx.arc(ex,ey,4,0,2*Math.PI);
+  ctx.fillStyle=COL.image; ctx.fill();
+}
+
+function drawSpiralOnSphere(spiral, tilt, spin) {
+  // Map input spiral to sphere via stereographic projection of itself
+  const pts3D=[];
+  for(const [zx,zy] of spiral) {
+    pts3D.push(stereo(zx*0.85, zy*0.85)); // scale to stay away from south pole boundary
+  }
+
+  ctx.lineWidth=1.5;
+  ctx.strokeStyle=COL.spiral;
+  ctx.beginPath();
+  let drawing=false;
+  for(let i=0;i<pts3D.length;i++) {
+    const [px,py,pz]=project3D(...pts3D[i],tilt,spin);
+    ctx.globalAlpha = pz < -0.15 ? 0.2 : 1.0;
+    if(!drawing){ctx.moveTo(px,py);drawing=true;}
+    else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  ctx.globalAlpha=1;
+
+  // Arrowhead at tip
+  const N=pts3D.length;
+  if(N>2) {
+    const [px1,py1]=project3D(...pts3D[N-3],tilt,spin).slice(0,2);
+    const [px2,py2]=project3D(...pts3D[N-1],tilt,spin).slice(0,2);
+    const ang=Math.atan2(py2-py1,px2-px1);
+    ctx.beginPath();
+    ctx.moveTo(px2,py2);
+    ctx.lineTo(px2-9*Math.cos(ang-0.4),py2-9*Math.sin(ang-0.4));
+    ctx.lineTo(px2-9*Math.cos(ang+0.4),py2-9*Math.sin(ang+0.4));
+    ctx.closePath();
+    ctx.fillStyle=COL.spiral;
+    ctx.globalAlpha=1;
+    ctx.fill();
+  }
+}
+
+// Small inset: complex plane with spiral
+function drawInset(spiral) {
+  const ix=500, iy=500, ir=90;
+  // Background
+  ctx.fillStyle='#131311';
+  ctx.fillRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
+  ctx.strokeStyle='#2a2a26';
+  ctx.lineWidth=0.5;
+  ctx.strokeRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
+
+  // Axes
+  ctx.strokeStyle='#2e2e2a';
+  ctx.lineWidth=0.5;
+  ctx.beginPath();
+  ctx.moveTo(ix-ir-4,iy); ctx.lineTo(ix+ir+4,iy);
+  ctx.moveTo(ix,iy-ir-4); ctx.lineTo(ix,iy+ir+4);
+  ctx.stroke();
+
+  ctx.fillStyle=COL.muted;
+  ctx.font='10px "JetBrains Mono",monospace';
+  ctx.fillText('ℂ',ix-ir-10,iy-ir-4);
+
+  // Spiral
+  ctx.beginPath();
+  let first=true;
+  for(const [zx,zy] of spiral) {
+    const px=ix+ir*zx, py=iy-ir*zy;
+    if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
+  }
+  ctx.strokeStyle=COL.spiral;
+  ctx.lineWidth=1.3;
+  ctx.stroke();
+
+  // Origin
+  ctx.beginPath(); ctx.arc(ix,iy,4,0,2*Math.PI);
+  ctx.fillStyle=COL.south; ctx.fill();
+
+  // Label
+  ctx.fillStyle=COL.muted;
+  ctx.font='10px "JetBrains Mono",monospace';
+  ctx.fillText('z→0',ix+6,iy-6);
+}
+
+function buildLaurentFormula(N) {
+  const sups = ['','','²','³','⁴','⁵','⁶','⁷','⁸','⁹','¹⁰','¹¹','¹²','¹³','¹⁴','¹⁵','¹⁶','¹⁷','¹⁸','¹⁹','²⁰'];
+  const facts = [1,1,2,6,24,120,720,5040,40320,362880,3628800,39916800,479001600];
+  let terms=[];
+  for(let k=0;k<=Math.min(N,12);k++){
+    const f=k<facts.length?facts[k]:null;
+    const fStr=f?`${f}`:`${k}!`;
+    const kStr=k===0?'1':(k===1?`1/z`:`1/(${fStr}z${sups[k]||'^'+k})`);
+    terms.push(k===0?'1':kStr);
+  }
+  if(N>12) terms.push(`… + 1/(${N}! z${sups[N]||'^'+N})`);
+  return terms.join(' + ');
+}
+
+function drawTitle(fnKey) {
+  ctx.fillStyle=COL.accent;
+  ctx.font='italic 15px "EB Garamond",serif';
+  const labels={
+    inv1:'f(z) = 1/z', inv4:'f(z) = 1/z⁴', inv20:'f(z) = 1/z²⁰',
+    exp:'f(z) = e^(1/z)', log:'f(z) = Log(z)',
+    laurent: `f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`
+  };
+  ctx.fillText(labels[fnKey], 18, 24);
+}
+
+// State
+let state = { fn:'inv1', turns:3, tilt:-28, spin:20, terms:3 };
+let animState = { playing: false, phase: 0, rafId: null, lastTime: null, speed: 6 };
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+function fmtC(re, im) {
+  const rStr = re.toFixed(3);
+  const sign = im < 0 ? ' − ' : ' + ';
+  return `${rStr}${sign}${Math.abs(im).toFixed(3)}i`;
+}
+function fmt3(x) { return x.toFixed(4); }
+
+// ── compute point at parameter t ∈ [0,1] ──────────────────────────────────
+function pointAtT(t) {
+  const angle = state.turns * 2 * Math.PI * t;
+  const r = (1 - t) * 0.92 + 0.025;
+  const zx = r * Math.cos(-angle), zy = r * Math.sin(-angle);
+  const fn = FNS[state.fn];
+  const w = fn([zx, zy]);
+  let wx = null, wy = null, sph = null;
+  if (w) {
+    [wx, wy] = clamp(w[0], w[1], 22);
+    sph = stereo(wx, wy);
+  }
+  return { t, zx, zy, r, angle, wx, wy, sph };
+}
+
+// ── update live readout panel ─────────────────────────────────────────────
+function updateReadout(pt) {
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('lv-t',   pt.t.toFixed(4));
+  set('lv-r',   pt.r.toFixed(4));
+  set('lv-arg', (pt.angle % (2*Math.PI) * 180 / Math.PI).toFixed(1) + '°');
+  set('lv-z',   fmtC(pt.zx, pt.zy));
+  if (pt.wx !== null) {
+    set('lv-fz',   fmtC(pt.wx, pt.wy));
+    set('lv-fmod', Math.sqrt(pt.wx*pt.wx + pt.wy*pt.wy).toFixed(3));
+    if (pt.sph) {
+      set('lv-X', fmt3(pt.sph[0]));
+      set('lv-Y', fmt3(pt.sph[1]));
+      set('lv-Z', fmt3(pt.sph[2]));
+    }
+  } else {
+    set('lv-fz','—'); set('lv-fmod','—');
+    set('lv-X','—'); set('lv-Y','—'); set('lv-Z','—');
+  }
+}
+
+// ── draw moving dots on sphere and inset ─────────────────────────────────
+function drawMovingDot(pt, tilt, spin) {
+  // dot on inset (z-plane)
+  const ix=500, iy=500, ir=90;
+  const dx = ix + ir*pt.zx, dy = iy - ir*pt.zy;
+  ctx.beginPath(); ctx.arc(dx, dy, 5, 0, 2*Math.PI);
+  ctx.fillStyle = COL.spiral; ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
+
+  // dot on sphere (image)
+  if (pt.sph) {
+    const [px, py, pz] = project3D(...pt.sph, tilt, spin);
+    ctx.globalAlpha = pz < -0.1 ? 0.4 : 1.0;
+    ctx.beginPath(); ctx.arc(px, py, 6, 0, 2*Math.PI);
+    ctx.fillStyle = COL.image; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ── main render ───────────────────────────────────────────────────────────
+function render(overrideT) {
+  const spiral = buildSpiral(state.turns);
+  drawSphere(state.tilt, state.spin);
+  drawSpiralOnSphere(spiral, state.tilt, state.spin);
+  drawImagePath(state.fn, spiral, state.tilt, state.spin);
+  drawInset(spiral);
+  drawTitle(state.fn);
+
+  const t = overrideT !== undefined ? overrideT : animState.phase;
+  const pt = pointAtT(t);
+  drawMovingDot(pt, state.tilt, state.spin);
+  updateReadout(pt);
+  updateInfo();
+}
+
+function updateInfo() {
+  const info = INFOS[state.fn];
+  document.getElementById('info-content').innerHTML =
+    `<span class="sing-type ${info.cls}">${info.label}</span><p class="info-desc">${info.desc}</p>`;
+  const isLaurent = state.fn === 'laurent';
+  document.getElementById('terms-row').style.display = isLaurent ? 'flex' : 'none';
+  const formulaEl = document.getElementById('laurent-formula');
+  if (isLaurent) {
+    formulaEl.style.display = 'block';
+    formulaEl.textContent = buildLaurentFormula(state.terms);
+  } else {
+    formulaEl.style.display = 'none';
+  }
+}
+
+// ── animation loop ────────────────────────────────────────────────────────
+function animate(ts) {
+  if (!animState.playing) return;
+  if (animState.lastTime === null) animState.lastTime = ts;
+  const dt = (ts - animState.lastTime) / 1000;
+  animState.lastTime = ts;
+  // advance phase; speed 1 = 1 full cycle / 20s, speed 20 = 1 cycle / 1s
+  animState.phase = (animState.phase + dt * animState.speed * 0.05) % 1;
+  // sync scrub
+  document.getElementById('scrub').value = Math.round(animState.phase * 1000);
+  render(animState.phase);
+  animState.rafId = requestAnimationFrame(animate);
+}
+
+function setPlaying(on) {
+  animState.playing = on;
+  document.getElementById('play-btn').innerHTML = on ? '&#9646;&#9646;' : '&#9654;';
+  if (on) {
+    animState.lastTime = null;
+    animState.rafId = requestAnimationFrame(animate);
+  } else {
+    if (animState.rafId) cancelAnimationFrame(animState.rafId);
+  }
+}
+
+// ── controls ──────────────────────────────────────────────────────────────
+document.getElementById('play-btn').addEventListener('click', () => {
+  setPlaying(!animState.playing);
+});
+
+document.getElementById('scrub').addEventListener('input', function() {
+  animState.phase = parseInt(this.value) / 1000;
+  if (animState.playing) { setPlaying(false); }
+  render(animState.phase);
+});
+
+document.getElementById('speed').addEventListener('input', function() {
+  animState.speed = parseInt(this.value);
+  document.getElementById('speed-out').textContent = this.value;
+});
+
+document.querySelectorAll('.fn-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fn-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.fn = btn.dataset.fn;
+    render(animState.phase);
+  });
+});
+
+['turns','tilt','spin','terms'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const out = document.getElementById(id+'-out');
+  el.addEventListener('input', () => {
+    state[id] = parseFloat(el.value);
+    out.textContent = id==='tilt'||id==='spin' ? el.value+'°' : el.value;
+    render(animState.phase);
+  });
+});
+
+render(0);
+</script>
+</body>
+</html>
