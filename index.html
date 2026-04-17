@@ -370,7 +370,7 @@
         <span class="type">Pole, order 4</span>
       </button>
       <button class="fn-btn" data-fn="inv20">
-        <span class="math">f(z) = 1/z²⁰</span>
+        <span class="math">f(z) = 1/z<sup>20</sup></span>
         <span class="type">Pole, order 20</span>
       </button>
       <button class="fn-btn" data-fn="exp">
@@ -385,20 +385,41 @@
         <span class="math">f(z) = Log(z)</span>
         <span class="type">Branch point</span>
       </button>
+      <button class="fn-btn" data-fn="sinz">
+        <span class="math">f(z) = 1/sin(z)</span>
+        <span class="type">Simple poles at nπ</span>
+      </button>
+      <button class="fn-btn" data-fn="sin1z">
+        <span class="math">f(z) = sin(1/z)</span>
+        <span class="type">Essential singularity</span>
+      </button>
     </div>
 
     <div class="ctrl-group">
       <h2>Parameters</h2>
+      <div style="margin-bottom:0.4rem;font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">Input</div>
       <div style="display:flex;gap:6px;margin-bottom:0.8rem">
-        <button class="mode-btn active" data-mode="spiral" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--accent);cursor:pointer;transition:border-color 0.15s,background 0.15s">spiral</button>
-        <button class="mode-btn" data-mode="monte" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">monte carlo</button>
-        <button class="mode-btn" data-mode="heatmap" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">heatmap</button>
+        <button class="input-btn active" data-input="spiral" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--accent);cursor:pointer;transition:border-color 0.15s,background 0.15s">spiral</button>
+        <button class="input-btn" data-input="mma" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">mma path</button>
+        <button class="input-btn" data-input="monte" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">monte carlo</button>
+      </div>
+      <div style="margin-bottom:0.4rem;font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">View</div>
+      <div style="display:flex;gap:6px;margin-bottom:0.8rem">
+        <button class="view-btn active" data-view="sphere" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--accent);cursor:pointer;transition:border-color 0.15s,background 0.15s">sphere</button>
+        <button class="view-btn" data-view="plane" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">w-plane</button>
       </div>
       <div id="spiral-params">
         <div class="slider-row">
           <span class="slider-label">Turns</span>
           <input type="range" id="turns" min="1" max="7" step="0.5" value="3">
           <span class="slider-val" id="turns-out">3</span>
+        </div>
+      </div>
+      <div id="mma-params" style="display:none">
+        <div class="slider-row">
+          <span class="slider-label">t max</span>
+          <input type="range" id="tmax" min="5" max="100" step="5" value="30">
+          <span class="slider-val" id="tmax-out">30</span>
         </div>
       </div>
       <div id="monte-params" style="display:none">
@@ -419,15 +440,24 @@
         </div>
         <button id="resample-btn" style="width:100%;margin-top:4px;padding:5px 0;font-size:0.72rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--accent);cursor:pointer">resample ↺</button>
       </div>
+      <div id="sphere-params">
       <div class="slider-row" style="margin-top:0.6rem">
         <span class="slider-label">Tilt</span>
-        <input type="range" id="tilt" min="-75" max="75" value="-28">
-        <span class="slider-val" id="tilt-out">-28°</span>
+        <input type="range" id="tilt" min="-75" max="75" value="-61">
+        <span class="slider-val" id="tilt-out">-61°</span>
       </div>
       <div class="slider-row">
         <span class="slider-label">Spin</span>
-        <input type="range" id="spin" min="-60" max="60" value="20">
-        <span class="slider-val" id="spin-out">20°</span>
+        <input type="range" id="spin" min="-60" max="60" value="-51">
+        <span class="slider-val" id="spin-out">-51°</span>
+      </div>
+      </div>
+      <div id="plane-params" style="display:none">
+      <div class="slider-row" style="margin-top:0.6rem">
+        <span class="slider-label">Window</span>
+        <input type="range" id="planeR" min="0.5" max="50" step="0.5" value="5">
+        <span class="slider-val" id="planeR-out">5</span>
+      </div>
       </div>
       <div class="slider-row" id="terms-row" style="display:none;border-top:1px solid var(--border);padding-top:0.6rem;margin-top:0.4rem">
         <span class="slider-label">Terms N</span>
@@ -456,9 +486,9 @@
       <div class="live-row"><span class="live-key">f(z)</span><span class="live-val blue" id="lv-fz">—</span></div>
       <div class="live-row"><span class="live-key">|f(z)|</span><span class="live-val blue" id="lv-fmod">—</span></div>
       <div style="border-top:1px solid var(--border);margin:6px 0"></div>
-      <div class="live-row"><span class="live-key">X (sphere)</span><span class="live-val blue" id="lv-X">—</span></div>
-      <div class="live-row"><span class="live-key">Y (sphere)</span><span class="live-val blue" id="lv-Y">—</span></div>
-      <div class="live-row"><span class="live-key">Z (sphere)</span><span class="live-val blue" id="lv-Z">—</span></div>
+      <div class="live-row"><span class="live-key" id="lv-X-key">X (sphere)</span><span class="live-val blue" id="lv-X">—</span></div>
+      <div class="live-row"><span class="live-key" id="lv-Y-key">Y (sphere)</span><span class="live-val blue" id="lv-Y">—</span></div>
+      <div class="live-row"><span class="live-key" id="lv-Z-key">Z (sphere)</span><span class="live-val blue" id="lv-Z">—</span></div>
     </div>
 
     <div class="info-panel" id="info-panel">
@@ -499,8 +529,10 @@ const COL = {
   axis:    '#2a2a26',
 };
 
-// Sphere center & radius — leave room for inset below
-const CX = 300, CY = 290, R = 220;
+// Sphere center & radius
+const CX = 290, CY = 300, R = 210;
+// Inset position: lower-right corner, clear of sphere
+const IX = 548, IY = 520, IR = 78;
 
 const INFOS = {
   inv1:  { cls: 'pole', label: 'Simple pole (order 1)',
@@ -515,6 +547,10 @@ const INFOS = {
     desc: 'The N-term partial sum is a rational function with a pole of order N at 0 — so for any finite N, the image converges to ∞. But as N → ∞ the pole order grows without bound and the limit becomes the essential singularity. Watch the image path grow wilder as you add terms, interpolating between a tame pole and the chaotic essential singularity.' },
   log:   { cls: 'branch', label: 'Branch point',
     desc: 'Log(z) is not single-valued: each loop around 0 shifts the image by 2πi. The image climbs the imaginary axis indefinitely, spiraling toward a band on the sphere rather than a point. The singularity is of a different character — not a pole, but a failure of single-valuedness.' },
+  sinz:  { cls: 'pole', label: 'Simple poles at z = nπ',
+    desc: '1/sin(z) has simple poles at every integer multiple of π. Near z=0, sin(z)≈z so 1/sin(z)≈1/z — the singularity at the origin looks just like a simple pole. But the spiral also passes near ±π, ±2π, … producing additional pole-like excursions. The image on the sphere converges to ∞ each time the spiral passes near any nπ.' },
+  sin1z: { cls: 'ess', label: 'Essential singularity — sin(1/z)',
+    desc: 'sin(1/z) has an essential singularity at 0. Unlike e^(1/z) which omits the value 0, sin(1/z) takes every complex value in any punctured neighborhood of 0 — its Picard exceptional set is empty. Near the real axis, sin(1/x) oscillates between −1 and 1 infinitely rapidly; in the complex plane the image fills ℂ entirely.' },
 };
 
 const FNS = {
@@ -563,6 +599,27 @@ const FNS = {
     if(x*x+y*y<1e-22)return null;
     return [0.5*Math.log(x*x+y*y), Math.atan2(y,x)];
   },
+  sinz: ([x,y]) => {
+    // sin(x+iy) = sin(x)cosh(y) + i cos(x)sinh(y)
+    const sr = Math.sin(x)*Math.cosh(y);
+    const si = Math.cos(x)*Math.sinh(y);
+    const mod2 = sr*sr + si*si;
+    if (mod2 < 1e-22) return null;
+    return [sr/mod2, -si/mod2];
+  },
+  sin1z: ([x,y]) => {
+    // compute 1/z first
+    const r2 = x*x+y*y; if(r2<1e-22) return null;
+    const invRe = x/r2, invIm = -y/r2;
+    // sin(1/z) = sin(invRe + i*invIm)
+    // = sin(invRe)cosh(invIm) + i cos(invRe)sinh(invIm)
+    // guard against cosh/sinh overflow for large |1/z|
+    if (Math.abs(invIm) > 700) return null;
+    const sr = Math.sin(invRe)*Math.cosh(invIm);
+    const si = Math.cos(invRe)*Math.sinh(invIm);
+    if (!isFinite(sr) || !isFinite(si)) return null;
+    return [sr, si];
+  },
 };
 
 function clamp(x,y,lim=22) {
@@ -570,22 +627,23 @@ function clamp(x,y,lim=22) {
   return r>lim ? [x*lim/r, y*lim/r] : [x,y];
 }
 
-// Stereographic projection that handles arbitrarily large w without clamping.
-// For large |w|, approaches north pole (0,0,1) smoothly.
-// Also handles Infinity inputs (e.g. exp overflow) by sending directly to north pole.
-function safeStero(wx, wy) {
-  // If either component is non-finite, the value is ∞ → north pole
-  if (!isFinite(wx) || !isFinite(wy)) return [0, 0, 1];
-  const r2 = wx*wx + wy*wy;
-  // r2 itself can overflow to Infinity for very large but finite wx,wy
-  if (!isFinite(r2)) return [0, 0, 1];
-  const d = 1 + r2;
-  return [2*wx/d, 2*wy/d, (r2-1)/d];
+// Stereographic projection: south pole at origin convention.
+// Sphere sits on the complex plane, south pole = (0,0,-1) maps to w=0,
+// north pole = (0,0,1) maps to ∞. Equator maps to |w|=2.
+// Forward map ℂ → S²: stereo(x,y) with r²=x²+y²
+//   X = 4x/(4+r²),  Y = 4y/(4+r²),  Z = (r²-4)/(r²+4)
+function stereo(x, y) {
+  const r2 = x*x + y*y, d = 4 + r2;
+  return [4*x/d, 4*y/d, (r2-4)/d];
 }
 
-function stereo(x,y) {
-  const r2=x*x+y*y, d=1+r2;
-  return [2*x/d, 2*y/d, (r2-1)/d];
+// safeStero: same convention, handles large/infinite values
+function safeStero(wx, wy) {
+  if (!isFinite(wx) || !isFinite(wy)) return [0, 0, 1];
+  const r2 = wx*wx + wy*wy;
+  if (!isFinite(r2)) return [0, 0, 1];
+  const d = 4 + r2;
+  return [4*wx/d, 4*wy/d, (r2-4)/d];
 }
 
 function project3D(X,Y,Z, tiltDeg, spinDeg) {
@@ -676,388 +734,40 @@ function drawSphere(tilt, spin) {
   ctx.fillText('0',spx+8,spy+4);
 }
 
-function buildSpiral(turns, steps=800) {
+// State
+let state = { fn:'inv1', turns:3, tilt:-61, spin:-51, terms:3,
+              input:'spiral', view:'sphere', numpts:800, rmin:0.05, rmax:0.5,
+              planeR:5, _planeRAutofit:true, tmax:30 };
+let animState = { playing: false, phase: 0, rafId: null, lastTime: null, speed: 6 };
+let montePts = [];
+
+// ── spiral drawing ────────────────────────────────────────────────────────
+// Mathematica reference path: z(t) = e^(it) / sqrt(t + 0.01), t in [0, tmax]
+function buildMmaPath(steps=800) {
   const pts=[];
+  const tmax = state.tmax;
   for(let i=0;i<=steps;i++) {
-    const t=i/steps;
-    const angle=turns*2*Math.PI*t;
-    const r=(1-t)*0.92+0.025;
-    pts.push([r*Math.cos(-angle), r*Math.sin(-angle)]);
+    const t = (i/steps) * tmax;
+    const r = 1/Math.sqrt(t + 0.01);
+    // Mathematica uses {Cos[t], Sin[t]} as real/imag, so z = r*(cos t + i sin t)
+    pts.push([r*Math.cos(t), r*Math.sin(t)]);
   }
   return pts;
 }
 
-function drawImagePath(fnKey, spiral, tilt, spin) {
-  const fn=FNS[fnKey];
-  const pts3D=[];
-  for(const [zx,zy] of spiral) {
-    const w=fn([zx,zy]);
-    if(!w) continue;
-    pts3D.push(safeStero(w[0], w[1]));
-  }
-  if(pts3D.length<2) return;
-
-  // Draw with depth-based opacity
-  ctx.lineWidth=1.8;
-  ctx.setLineDash([5,4]);
-  ctx.strokeStyle=COL.image;
-
-  ctx.beginPath();
-  let drawing=false;
-  for(let i=0;i<pts3D.length;i++) {
-    const [px,py,pz]=project3D(...pts3D[i],tilt,spin);
-    ctx.globalAlpha = pz < -0.15 ? 0.2 : (pz < 0.1 ? 0.5 : 1.0);
-    if(!drawing){ctx.moveTo(px,py);drawing=true;}
-    else ctx.lineTo(px,py);
-  }
-  ctx.stroke();
-  ctx.globalAlpha=1;
-  ctx.setLineDash([]);
-
-  // Endpoint
-  const last=pts3D[pts3D.length-1];
-  const [ex,ey]=project3D(...last,tilt,spin).slice(0,2);
-  ctx.beginPath(); ctx.arc(ex,ey,4,0,2*Math.PI);
-  ctx.fillStyle=COL.image; ctx.fill();
+function buildActivePath() {
+  if (state.input === 'mma') return buildMmaPath(2400);
+  return buildSpiral(state.turns, 800);
 }
 
-function drawSpiralOnSphere(spiral, tilt, spin) {
-  // Map input spiral to sphere via stereographic projection of itself
-  const pts3D=[];
-  for(const [zx,zy] of spiral) {
-    pts3D.push(stereo(zx*0.85, zy*0.85)); // scale to stay away from south pole boundary
-  }
-
-  ctx.lineWidth=1.5;
-  ctx.strokeStyle=COL.spiral;
-  ctx.beginPath();
-  let drawing=false;
-  for(let i=0;i<pts3D.length;i++) {
-    const [px,py,pz]=project3D(...pts3D[i],tilt,spin);
-    ctx.globalAlpha = pz < -0.15 ? 0.2 : 1.0;
-    if(!drawing){ctx.moveTo(px,py);drawing=true;}
-    else ctx.lineTo(px,py);
-  }
-  ctx.stroke();
-  ctx.globalAlpha=1;
-
-  // Arrowhead at tip
-  const N=pts3D.length;
-  if(N>2) {
-    const [px1,py1]=project3D(...pts3D[N-3],tilt,spin).slice(0,2);
-    const [px2,py2]=project3D(...pts3D[N-1],tilt,spin).slice(0,2);
-    const ang=Math.atan2(py2-py1,px2-px1);
-    ctx.beginPath();
-    ctx.moveTo(px2,py2);
-    ctx.lineTo(px2-9*Math.cos(ang-0.4),py2-9*Math.sin(ang-0.4));
-    ctx.lineTo(px2-9*Math.cos(ang+0.4),py2-9*Math.sin(ang+0.4));
-    ctx.closePath();
-    ctx.fillStyle=COL.spiral;
-    ctx.globalAlpha=1;
-    ctx.fill();
-  }
-}
-
-// Small inset: complex plane with spiral
-function drawInset(spiral) {
-  const ix=500, iy=500, ir=90;
-  // Background
-  ctx.fillStyle='#131311';
-  ctx.fillRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
-  ctx.strokeStyle='#2a2a26';
-  ctx.lineWidth=0.5;
-  ctx.strokeRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
-
-  // Axes
-  ctx.strokeStyle='#2e2e2a';
-  ctx.lineWidth=0.5;
-  ctx.beginPath();
-  ctx.moveTo(ix-ir-4,iy); ctx.lineTo(ix+ir+4,iy);
-  ctx.moveTo(ix,iy-ir-4); ctx.lineTo(ix,iy+ir+4);
-  ctx.stroke();
-
-  ctx.fillStyle=COL.muted;
-  ctx.font='10px "JetBrains Mono",monospace';
-  ctx.fillText('ℂ',ix-ir-10,iy-ir-4);
-
-  // Spiral
-  ctx.beginPath();
-  let first=true;
-  for(const [zx,zy] of spiral) {
-    const px=ix+ir*zx, py=iy-ir*zy;
-    if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
-  }
-  ctx.strokeStyle=COL.spiral;
-  ctx.lineWidth=1.3;
-  ctx.stroke();
-
-  // Origin
-  ctx.beginPath(); ctx.arc(ix,iy,4,0,2*Math.PI);
-  ctx.fillStyle=COL.south; ctx.fill();
-
-  // Label
-  ctx.fillStyle=COL.muted;
-  ctx.font='10px "JetBrains Mono",monospace';
-  ctx.fillText('z→0',ix+6,iy-6);
-}
-
-function buildLaurentFormula(N) {
-  const sups = ['','','²','³','⁴','⁵','⁶','⁷','⁸','⁹','¹⁰','¹¹','¹²','¹³','¹⁴','¹⁵','¹⁶','¹⁷','¹⁸','¹⁹','²⁰'];
-  const facts = [1,1,2,6,24,120,720,5040,40320,362880,3628800,39916800,479001600];
-  let terms=[];
-  for(let k=0;k<=Math.min(N,12);k++){
-    const f=k<facts.length?facts[k]:null;
-    const fStr=f?`${f}`:`${k}!`;
-    const kStr=k===0?'1':(k===1?`1/z`:`1/(${fStr}z${sups[k]||'^'+k})`);
-    terms.push(k===0?'1':kStr);
-  }
-  if(N>12) terms.push(`… + 1/(${N}! z${sups[N]||'^'+N})`);
-  return terms.join(' + ');
-}
-
-function drawTitle(fnKey) {
-  ctx.fillStyle=COL.accent;
-  ctx.font='italic 15px "EB Garamond",serif';
-  const labels={
-    inv1:'f(z) = 1/z', inv4:'f(z) = 1/z⁴', inv20:'f(z) = 1/z²⁰',
-    exp:'f(z) = e^(1/z)', log:'f(z) = Log(z)',
-    laurent: `f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`
-  };
-  ctx.fillText(labels[fnKey], 18, 24);
-}
-
-// State
-let state = { fn:'inv1', turns:3, tilt:-28, spin:20, terms:3,
-              mode:'spiral', numpts:800, rmin:0.05, rmax:0.5 };
-let animState = { playing: false, phase: 0, rafId: null, lastTime: null, speed: 6 };
-let montePts = []; // cached random sample
-
-// ── helpers ───────────────────────────────────────────────────────────────
-function fmtC(re, im) {
-  const rStr = re.toFixed(3);
-  const sign = im < 0 ? ' − ' : ' + ';
-  return `${rStr}${sign}${Math.abs(im).toFixed(3)}i`;
-}
-function fmt3(x) { return x.toFixed(4); }
-
-// hue by radius: inner (small r) = red/orange, outer = violet/blue
-function radiusColor(r, rmin, rmax, alpha=1) {
-  const t = rmax > rmin ? (r - rmin) / (rmax - rmin) : 0;
-  // hue: 0° (red) at r=rmin → 260° (violet) at r=rmax
-  const hue = Math.round(t * 260);
-  return `hsla(${hue},85%,62%,${alpha})`;
-}
-
-// ── heatmap ───────────────────────────────────────────────────────────────
-// Grid: NLon longitude bands × NLat latitude bands
-const NLon = 72, NLat = 36; // 5° cells
-
-function buildHeatmapGrid() {
-  const fn = FNS[state.fn];
-  const n = 30000; // large sample for smooth density
-  const rmin = state.rmin, rmax = state.rmax;
-  const grid = new Float32Array(NLon * NLat); // counts
-
-  for (let i = 0; i < n; i++) {
-    const r = Math.sqrt(Math.random() * (rmax*rmax - rmin*rmin) + rmin*rmin);
-    const theta = Math.random() * 2 * Math.PI;
-    const w = fn([r*Math.cos(theta), r*Math.sin(theta)]);
-    if (!w) continue;
-    const [X, Y, Z] = safeStero(w[0], w[1]);
-    // convert to spherical bin indices
-    // longitude: atan2(Y,X) in [0,2π)
-    const lon = ((Math.atan2(Y, X) + 2*Math.PI) % (2*Math.PI)) / (2*Math.PI); // [0,1)
-    // latitude: asin(Z) in [-π/2, π/2]
-    const lat = (Math.asin(Math.max(-1, Math.min(1, Z))) + Math.PI/2) / Math.PI; // [0,1)
-    const ci = Math.min(NLon-1, Math.floor(lon * NLon));
-    const cj = Math.min(NLat-1, Math.floor(lat * NLat));
-    grid[cj * NLon + ci]++;
-  }
-  return grid;
-}
-
-// Inferno-like palette: black → purple → orange → yellow → white
-function heatColor(t) {
-  // t in [0,1]
-  if (t <= 0) return null; // empty cell — transparent
-  // piecewise through: black(0) → purple(0.25) → red(0.5) → orange(0.75) → yellow(1)
-  const stops = [
-    [0,   [10,  5,  20]],
-    [0.2, [80,  10, 120]],
-    [0.4, [180, 30,  60]],
-    [0.6, [220, 100, 20]],
-    [0.8, [240, 180, 30]],
-    [1.0, [252, 248,180]],
-  ];
-  let lo = stops[0], hi = stops[stops.length-1];
-  for (let i = 0; i < stops.length-1; i++) {
-    if (t >= stops[i][0] && t <= stops[i+1][0]) { lo = stops[i]; hi = stops[i+1]; break; }
-  }
-  const s = (t - lo[0]) / (hi[0] - lo[0]);
-  const r = Math.round(lo[1][0] + s*(hi[1][0]-lo[1][0]));
-  const g = Math.round(lo[1][1] + s*(hi[1][1]-lo[1][1]));
-  const b = Math.round(lo[1][2] + s*(hi[1][2]-lo[1][2]));
-  return `rgb(${r},${g},${b})`;
-}
-
-function drawHeatmap(tilt, spin) {
-  const grid = buildHeatmapGrid();
-  const maxCount = Math.max(...grid);
-  if (maxCount === 0) return;
-  const logMax = Math.log(1 + maxCount);
-
-  // For each cell, project its 4 corners onto canvas and fill if facing viewer
-  for (let j = 0; j < NLat; j++) {
-    for (let i = 0; i < NLon; i++) {
-      const count = grid[j * NLon + i];
-      const t = Math.log(1 + count) / logMax;
-      const col = heatColor(t);
-      if (!col) continue;
-
-      // cell bounds in spherical coords
-      const lon0 = (i / NLon) * 2*Math.PI;
-      const lon1 = ((i+1) / NLon) * 2*Math.PI;
-      const lat0 = (j / NLat) * Math.PI - Math.PI/2;
-      const lat1 = ((j+1) / NLat) * Math.PI - Math.PI/2;
-
-      // 4 corners on unit sphere
-      const corners = [
-        [Math.cos(lat0)*Math.cos(lon0), Math.cos(lat0)*Math.sin(lon0), Math.sin(lat0)],
-        [Math.cos(lat0)*Math.cos(lon1), Math.cos(lat0)*Math.sin(lon1), Math.sin(lat0)],
-        [Math.cos(lat1)*Math.cos(lon1), Math.cos(lat1)*Math.sin(lon1), Math.sin(lat1)],
-        [Math.cos(lat1)*Math.cos(lon0), Math.cos(lat1)*Math.sin(lon0), Math.sin(lat1)],
-      ];
-
-      // check if cell center faces viewer (pz > 0)
-      const clat = (lat0+lat1)/2, clon = (lon0+lon1)/2;
-      const [,, cpz] = project3D(Math.cos(clat)*Math.cos(clon), Math.cos(clat)*Math.sin(clon), Math.sin(clat), tilt, spin);
-      if (cpz < 0) continue; // back-facing, skip
-
-      const projected = corners.map(([X,Y,Z]) => project3D(X,Y,Z,tilt,spin).slice(0,2));
-      ctx.beginPath();
-      ctx.moveTo(projected[0][0], projected[0][1]);
-      for (let k = 1; k < 4; k++) ctx.lineTo(projected[k][0], projected[k][1]);
-      ctx.closePath();
-      // depth-fade near limb
-      ctx.globalAlpha = Math.min(1, cpz * 3 + 0.3);
-      ctx.fillStyle = col;
-      ctx.fill();
-    }
-  }
-  ctx.globalAlpha = 1;
-
-  // Draw inset (same as monte) showing the input annulus
-  const ix=500, iy=500, ir=90;
-  ctx.fillStyle='#131311';
-  ctx.fillRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
-  ctx.strokeStyle='#2a2a26'; ctx.lineWidth=0.5;
-  ctx.strokeRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
-  ctx.strokeStyle='#2e2e2a'; ctx.lineWidth=0.5;
-  ctx.beginPath();
-  ctx.moveTo(ix-ir-4,iy); ctx.lineTo(ix+ir+4,iy);
-  ctx.moveTo(ix,iy-ir-4); ctx.lineTo(ix,iy+ir+4);
-  ctx.stroke();
-  ctx.strokeStyle='#484644'; ctx.lineWidth=0.5;
-  ctx.beginPath(); ctx.arc(ix, iy, ir*state.rmax, 0, 2*Math.PI); ctx.stroke();
-  if (state.rmin > 0.01) {
-    ctx.beginPath(); ctx.arc(ix, iy, ir*state.rmin, 0, 2*Math.PI); ctx.stroke();
-  }
-  ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
-  ctx.fillText('ℂ', ix-ir-10, iy-ir-4);
-  ctx.beginPath(); ctx.arc(ix, iy, 3, 0, 2*Math.PI);
-  ctx.fillStyle=COL.south; ctx.fill();
-
-  // Heatmap colorbar
-  const lx=ix-ir-14, lw=2*ir+28, ly=iy+ir+16;
-  const cg = ctx.createLinearGradient(lx,0,lx+lw,0);
-  for (let k=0;k<=10;k++) { const c=heatColor(k/10); if(c) cg.addColorStop(k/10,c); }
-  ctx.fillStyle=cg; ctx.fillRect(lx,ly,lw,6);
-  ctx.fillStyle=COL.muted; ctx.font='9px "JetBrains Mono",monospace';
-  ctx.fillText('low',lx,ly+17);
-  ctx.textAlign='center'; ctx.fillText('log density',lx+lw/2,ly+17);
-  ctx.textAlign='right'; ctx.fillText('high',lx+lw,ly+17);
-  ctx.textAlign='left';
-}
-
-
-function buildMontePts() {
-  const n = state.numpts, rmin = state.rmin, rmax = state.rmax;
-  montePts = [];
-  for (let i = 0; i < n; i++) {
-    // uniform in annulus: r² uniform in [rmin², rmax²]
-    const r = Math.sqrt(Math.random() * (rmax*rmax - rmin*rmin) + rmin*rmin);
-    const theta = Math.random() * 2 * Math.PI;
-    montePts.push([r * Math.cos(theta), r * Math.sin(theta), r]);
-  }
-}
-
-// ── draw monte carlo on sphere and inset ─────────────────────────────────
-function drawMonte(tilt, spin) {
-  const fn = FNS[state.fn];
-  const ix=500, iy=500, ir=90;
-
-  // inset background
-  ctx.fillStyle='#131311';
-  ctx.fillRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
-  ctx.strokeStyle='#2a2a26'; ctx.lineWidth=0.5;
-  ctx.strokeRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
-  ctx.strokeStyle='#2e2e2a'; ctx.lineWidth=0.5;
-  ctx.beginPath();
-  ctx.moveTo(ix-ir-4,iy); ctx.lineTo(ix+ir+4,iy);
-  ctx.moveTo(ix,iy-ir-4); ctx.lineTo(ix,iy+ir+4);
-  ctx.stroke();
-  // disk boundary circle
-  ctx.strokeStyle='#383634'; ctx.lineWidth=0.5;
-  ctx.beginPath(); ctx.arc(ix, iy, ir*state.rmax, 0, 2*Math.PI); ctx.stroke();
-  if (state.rmin > 0.01) {
-    ctx.beginPath(); ctx.arc(ix, iy, ir*state.rmin, 0, 2*Math.PI); ctx.stroke();
-  }
-  ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
-  ctx.fillText('ℂ', ix-ir-10, iy-ir-4);
-
-  for (const [zx, zy, r] of montePts) {
-    const col = radiusColor(r, state.rmin, state.rmax, 0.85);
-    // inset dot — pixel-snapped 2×2 rect
-    const dx = Math.round(ix + ir*zx), dy = Math.round(iy - ir*zy);
-    ctx.fillStyle = col;
-    ctx.fillRect(dx, dy, 2, 2);
-
-    // sphere dot — pixel-snapped 3×3 rect
-    const w = fn([zx, zy]);
-    if (!w) continue;
-    const sph = safeStero(w[0], w[1]);
-    const [px, py, pz] = project3D(...sph, tilt, spin);
-    ctx.globalAlpha = pz < -0.15 ? 0.18 : (pz < 0.05 ? 0.55 : 0.9);
-    ctx.fillStyle = col;
-    ctx.fillRect(Math.round(px)-1, Math.round(py)-1, 3, 3);
-  }
-  ctx.globalAlpha = 1;
-
-  // origin dot
-  ctx.beginPath(); ctx.arc(ix, iy, 3, 0, 2*Math.PI);
-  ctx.fillStyle = COL.south; ctx.fill();
-
-  // radius legend strip
-  const lx = ix-ir-14, lw = 2*ir+28, ly = iy+ir+16;
-  const grad = ctx.createLinearGradient(lx, 0, lx+lw, 0);
-  grad.addColorStop(0, 'hsla(0,85%,62%,0.8)');
-  grad.addColorStop(1, 'hsla(260,85%,62%,0.8)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(lx, ly, lw, 5);
-  ctx.fillStyle = COL.muted; ctx.font='9px "JetBrains Mono",monospace';
-  ctx.fillText(`r=${state.rmin.toFixed(2)}`, lx, ly+16);
-  ctx.textAlign='right';
-  ctx.fillText(`r=${state.rmax.toFixed(2)}`, lx+lw, ly+16);
-  ctx.textAlign='left';
-}
-
-// ── spiral drawing ────────────────────────────────────────────────────────
 function buildSpiral(turns, steps=800) {
   const pts=[];
+  const rMax = 0.9, rMin = 0.02;
   for(let i=0;i<=steps;i++) {
     const t=i/steps;
     const angle=turns*2*Math.PI*t;
-    const r=(1-t)*0.92+0.025;
+    // logarithmic: r decreases multiplicatively so all scales sampled equally
+    const r = rMax * Math.pow(rMin/rMax, t);
     pts.push([r*Math.cos(-angle), r*Math.sin(-angle)]);
   }
   return pts;
@@ -1124,8 +834,11 @@ function drawSpiralOnSphere(spiral, tilt, spin) {
   }
 }
 
+// inset scale — set by drawInset, used by drawMovingDot
+let _insetScale = IR; // default: 1 unit = IR pixels (old behaviour)
+
 function drawInset(spiral) {
-  const ix=500, iy=500, ir=90;
+  const ix=IX, iy=IY, ir=IR;
   ctx.fillStyle='#131311';
   ctx.fillRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
   ctx.strokeStyle='#2a2a26'; ctx.lineWidth=0.5;
@@ -1137,17 +850,24 @@ function drawInset(spiral) {
   ctx.stroke();
   ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
   ctx.fillText('ℂ',ix-ir-10,iy-ir-4);
+
+  // auto-scale: 80th percentile radius fills the inset
+  const radii = spiral.map(([zx,zy]) => Math.sqrt(zx*zx+zy*zy)).sort((a,b)=>a-b);
+  const refR = radii[Math.floor(radii.length * 0.8)] || 1;
+  const scale = (ir * 0.85) / refR;
+  _insetScale = scale; // store for drawMovingDot
+
   ctx.beginPath();
   let first=true;
   for(const [zx,zy] of spiral) {
-    const px=ix+ir*zx, py=iy-ir*zy;
+    const px=ix+scale*zx, py=iy-scale*zy;
     if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
   }
   ctx.strokeStyle=COL.spiral; ctx.lineWidth=1.3; ctx.stroke();
   ctx.beginPath(); ctx.arc(ix,iy,4,0,2*Math.PI);
   ctx.fillStyle=COL.south; ctx.fill();
   ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
-  ctx.fillText('z→0',ix+6,iy-6);
+  ctx.fillText('z→0',ix+4,iy-5);
 }
 
 function buildLaurentFormula(N) {
@@ -1169,22 +889,116 @@ function drawTitle(fnKey) {
   ctx.font='italic 15px "EB Garamond",serif';
   const labels={
     inv1:'f(z) = 1/z', inv4:'f(z) = 1/z⁴', inv20:'f(z) = 1/z²⁰',
-    exp:'f(z) = e^(1/z)', log:'f(z) = Log(z)',
+    exp:'f(z) = e^(1/z)', log:'f(z) = Log(z)', sinz:'f(z) = 1/sin(z)', sin1z:'f(z) = sin(1/z)',
     laurent: `f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`
   };
   ctx.fillText(labels[fnKey], 18, 24);
-  if (state.mode === 'monte') {
+  if (state.input === 'monte') {
     ctx.fillStyle = COL.muted;
     ctx.font = '11px "JetBrains Mono",monospace';
     ctx.fillText(`annulus  ${state.rmin.toFixed(2)} ≤ |z| ≤ ${state.rmax.toFixed(2)}   n=${state.numpts}`, 18, 42);
+  } else if (state.input === 'mma') {
+    ctx.fillStyle = COL.muted;
+    ctx.font = '11px "JetBrains Mono",monospace';
+    ctx.fillText(`z(t) = e^(it)/√(t+0.01)   t ∈ [0, ${state.tmax}]`, 18, 42);
   }
+}
+
+
+// ── helpers ───────────────────────────────────────────────────────────────
+function fmtC(re, im) {
+  const rStr = re.toFixed(3);
+  const sign = im < 0 ? ' − ' : ' + ';
+  return `${rStr}${sign}${Math.abs(im).toFixed(3)}i`;
+}
+function fmt3(x) { return x.toFixed(4); }
+
+function radiusColor(r, rmin, rmax, alpha=1) {
+  const t = rmax > rmin ? (r - rmin) / (rmax - rmin) : 0;
+  const hue = Math.round(t * 260);
+  return `hsla(${hue},85%,62%,${alpha})`;
+}
+
+// ── monte carlo sample ────────────────────────────────────────────────────
+function buildMontePts() {
+  const n = state.numpts, rmin = state.rmin, rmax = state.rmax;
+  montePts = [];
+  for (let i = 0; i < n; i++) {
+    const r = Math.sqrt(Math.random() * (rmax*rmax - rmin*rmin) + rmin*rmin);
+    const theta = Math.random() * 2 * Math.PI;
+    montePts.push([r * Math.cos(theta), r * Math.sin(theta), r]);
+  }
+}
+
+// ── draw monte carlo on sphere ────────────────────────────────────────────
+function drawMonte(tilt, spin) {
+  const fn = FNS[state.fn];
+  const ix=IX, iy=IY, ir=IR;
+
+  // inset background
+  ctx.fillStyle='#131311';
+  ctx.fillRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
+  ctx.strokeStyle='#2a2a26'; ctx.lineWidth=0.5;
+  ctx.strokeRect(ix-ir-14, iy-ir-14, 2*ir+28, 2*ir+28);
+  ctx.strokeStyle='#2e2e2a'; ctx.lineWidth=0.5;
+  ctx.beginPath();
+  ctx.moveTo(ix-ir-4,iy); ctx.lineTo(ix+ir+4,iy);
+  ctx.moveTo(ix,iy-ir-4); ctx.lineTo(ix,iy+ir+4);
+  ctx.stroke();
+  ctx.strokeStyle='#383634'; ctx.lineWidth=0.5;
+  ctx.beginPath(); ctx.arc(ix, iy, ir*state.rmax, 0, 2*Math.PI); ctx.stroke();
+  if (state.rmin > 0.01) {
+    ctx.beginPath(); ctx.arc(ix, iy, ir*state.rmin, 0, 2*Math.PI); ctx.stroke();
+  }
+  ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
+  ctx.fillText('ℂ', ix-ir-10, iy-ir-4);
+
+  for (const [zx, zy, r] of montePts) {
+    const col = radiusColor(r, state.rmin, state.rmax, 0.85);
+    const dx = Math.round(ix + ir*zx), dy = Math.round(iy - ir*zy);
+    ctx.fillStyle = col;
+    ctx.fillRect(dx, dy, 2, 2);
+
+    const w = fn([zx, zy]);
+    if (!w) continue;
+    const sph = safeStero(w[0], w[1]);
+    const [px, py, pz] = project3D(...sph, tilt, spin);
+    ctx.globalAlpha = pz < -0.15 ? 0.18 : (pz < 0.05 ? 0.55 : 0.9);
+    ctx.fillStyle = col;
+    ctx.fillRect(Math.round(px)-1, Math.round(py)-1, 3, 3);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.beginPath(); ctx.arc(ix, iy, 3, 0, 2*Math.PI);
+  ctx.fillStyle = COL.south; ctx.fill();
+
+  const lx = ix-ir-14, lw = 2*ir+28, ly = iy+ir+16;
+  const grad = ctx.createLinearGradient(lx, 0, lx+lw, 0);
+  grad.addColorStop(0, 'hsla(0,85%,62%,0.8)');
+  grad.addColorStop(1, 'hsla(260,85%,62%,0.8)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(lx, ly, lw, 5);
+  ctx.fillStyle = COL.muted; ctx.font='9px "JetBrains Mono",monospace';
+  ctx.fillText(`r=${state.rmin.toFixed(2)}`, lx, ly+16);
+  ctx.textAlign='right';
+  ctx.fillText(`r=${state.rmax.toFixed(2)}`, lx+lw, ly+16);
+  ctx.textAlign='left';
 }
 
 // ── compute point at parameter t ∈ [0,1] ─────────────────────────────────
 function pointAtT(t) {
-  const angle = state.turns * 2 * Math.PI * t;
-  const r = (1 - t) * 0.92 + 0.025;
-  const zx = r * Math.cos(-angle), zy = r * Math.sin(-angle);
+  let zx, zy, r, angle;
+  if (state.input === 'mma') {
+    const tval = t * state.tmax;
+    r = 1/Math.sqrt(tval + 0.01);
+    zx = r*Math.cos(tval); zy = r*Math.sin(tval);
+    angle = tval; // argument of z
+  } else {
+    angle = state.turns * 2 * Math.PI * t;
+    const rMax = 0.9, rMin = 0.02;
+    r = rMax * Math.pow(rMin/rMax, t);
+    zx = r * Math.cos(-angle); zy = r * Math.sin(-angle);
+  }
   const fn = FNS[state.fn];
   const w = fn([zx, zy]);
   let wx = null, wy = null, sph = null;
@@ -1197,7 +1011,17 @@ function pointAtT(t) {
 
 function updateReadout(pt) {
   const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  if (state.mode === 'monte') {
+  const isPlane = state.view === 'plane';
+
+  // Update label for last three rows depending on view
+  const xLabel = document.getElementById('lv-X-key');
+  const yLabel = document.getElementById('lv-Y-key');
+  const zLabel = document.getElementById('lv-Z-key');
+  if (xLabel) xLabel.textContent = isPlane ? 'Re(w)' : 'X (sphere)';
+  if (yLabel) yLabel.textContent = isPlane ? 'Im(w)' : 'Y (sphere)';
+  if (zLabel) zLabel.textContent = isPlane ? '|w|'   : 'Z (sphere)';
+
+  if (state.input === 'monte' || !pt) {
     set('lv-t','—'); set('lv-r','—'); set('lv-arg','—'); set('lv-z','—');
     set('lv-fz','—'); set('lv-fmod','—');
     set('lv-X','—'); set('lv-Y','—'); set('lv-Z','—');
@@ -1210,7 +1034,11 @@ function updateReadout(pt) {
   if (pt.wx !== null) {
     set('lv-fz',   fmtC(pt.wx, pt.wy));
     set('lv-fmod', Math.sqrt(pt.wx*pt.wx + pt.wy*pt.wy).toFixed(3));
-    if (pt.sph) {
+    if (isPlane) {
+      set('lv-X', fmt3(pt.wx));
+      set('lv-Y', fmt3(pt.wy));
+      set('lv-Z', fmt3(Math.sqrt(pt.wx*pt.wx + pt.wy*pt.wy)));
+    } else if (pt.sph) {
       set('lv-X', fmt3(pt.sph[0]));
       set('lv-Y', fmt3(pt.sph[1]));
       set('lv-Z', fmt3(pt.sph[2]));
@@ -1222,11 +1050,12 @@ function updateReadout(pt) {
 }
 
 function drawMovingDot(pt, tilt, spin) {
-  const ix=500, iy=500, ir=90;
-  const dx = ix + ir*pt.zx, dy = iy - ir*pt.zy;
+  const ix=IX, iy=IY;
+  const dx = ix + _insetScale*pt.zx, dy = iy - _insetScale*pt.zy;
   ctx.beginPath(); ctx.arc(dx, dy, 5, 0, 2*Math.PI);
   ctx.fillStyle = COL.spiral; ctx.fill();
   ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
+
   if (pt.sph) {
     const [px, py, pz] = project3D(...pt.sph, tilt, spin);
     ctx.globalAlpha = pz < -0.1 ? 0.4 : 1.0;
@@ -1237,25 +1066,239 @@ function drawMovingDot(pt, tilt, spin) {
   }
 }
 
-// ── main render ───────────────────────────────────────────────────────────
-function render(overrideT) {
-  drawSphere(state.tilt, state.spin);
+// ── w-plane view ──────────────────────────────────────────────────────────
+// Full-canvas view of the image in the complex w-plane.
+// We auto-scale to fit the visible points. Spiral mode draws the image path;
+// monte mode draws scattered points colored by |z|.
 
-  if (state.mode === 'monte') {
+function drawPlaneAxes(cx, cy, scale, viewR) {
+  // grid circles
+  ctx.strokeStyle = '#222220'; ctx.lineWidth = 0.5;
+  for (let r = 1; r * scale < viewR * 1.1; r++) {
+    ctx.beginPath(); ctx.arc(cx, cy, r*scale, 0, 2*Math.PI); ctx.stroke();
+    ctx.fillStyle = COL.muted; ctx.font = '9px "JetBrains Mono",monospace';
+    ctx.fillText(r, cx + r*scale + 2, cy - 2);
+  }
+  // axes
+  ctx.strokeStyle = '#2e2e2a'; ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(cx - viewR, cy); ctx.lineTo(cx + viewR, cy);
+  ctx.moveTo(cx, cy - viewR); ctx.lineTo(cx, cy + viewR);
+  ctx.stroke();
+  // labels
+  ctx.fillStyle = COL.muted; ctx.font = '10px "JetBrains Mono",monospace';
+  ctx.fillText('Re(w)', cx + viewR - 36, cy - 6);
+  ctx.fillText('Im', cx + 4, cy - viewR + 12);
+}
+
+// ── w-plane view ──────────────────────────────────────────────────────────
+// Static parts (path, scale, axes) are cached by fn+turns+terms.
+// Only the moving dot is drawn fresh each frame.
+
+let _planeCache = null;
+
+function buildPlaneCache() {
+  const fn = FNS[state.fn];
+  const spiral = buildActivePath();
+  const wpts = [];
+  for (const [zx,zy] of spiral) {
+    const w = fn([zx,zy]); if (!w) continue;
+    if (!isFinite(w[0]) || !isFinite(w[1])) continue;
+    wpts.push(w);
+  }
+  const cx = W/2, cy = H/2, viewR = Math.min(cx,cy) - 30;
+
+  // Auto-fit: use 70th percentile of |w| as window radius if slider is at default,
+  // otherwise respect user's slider value.
+  let PLANE_R = state.planeR;
+  if (wpts.length > 1 && state._planeRAutofit) {
+    const mods = wpts.map(([a,b]) => Math.sqrt(a*a+b*b)).sort((a,b)=>a-b);
+    const fit = mods[Math.floor(mods.length * 0.7)] || 5;
+    // round to a nice number
+    PLANE_R = Math.max(0.5, parseFloat(fit.toPrecision(2)));
+    state.planeR = PLANE_R;
+    state._planeRAutofit = false;
+    // sync slider
+    const el = document.getElementById('planeR');
+    const out = document.getElementById('planeR-out');
+    if (el) { el.max = Math.max(50, PLANE_R*3); el.value = PLANE_R; }
+    if (out) out.textContent = PLANE_R;
+  }
+  const scale = viewR / PLANE_R;
+
+  // draw static frame into offscreen canvas
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  const o = off.getContext('2d');
+  o.imageSmoothingEnabled = false;
+  o.fillStyle = COL.bg; o.fillRect(0,0,W,H);
+  // grid circles at r=1,2,3,4,5
+  o.strokeStyle = '#222220'; o.lineWidth = 0.5;
+  for (let r = 1; r <= PLANE_R; r++) {
+    o.beginPath(); o.arc(cx,cy,r*scale,0,2*Math.PI); o.stroke();
+    o.fillStyle=COL.muted; o.font='9px "JetBrains Mono",monospace';
+    o.fillText(r, cx+r*scale+2, cy-2);
+  }
+  // axes
+  o.strokeStyle='#2e2e2a'; o.lineWidth=0.5;
+  o.beginPath(); o.moveTo(cx-viewR,cy); o.lineTo(cx+viewR,cy);
+  o.moveTo(cx,cy-viewR); o.lineTo(cx,cy+viewR); o.stroke();
+  o.fillStyle=COL.muted; o.font='10px "JetBrains Mono",monospace';
+  o.fillText('Re(w)', cx+viewR-36, cy-6);
+  o.fillText('Im', cx+4, cy-viewR+12);
+  // image path — clip to window, break on large jumps
+  if (wpts.length > 1) {
+    o.setLineDash([5,4]); o.strokeStyle=COL.image; o.lineWidth=1.8;
+    o.beginPath(); let first=true;
+    let prevWx=null, prevWy=null;
+    for (const [wx,wy] of wpts) {
+      if (Math.sqrt(wx*wx+wy*wy) > PLANE_R * 1.5) { first=true; prevWx=null; continue; }
+      // break path if jump is too large (more than 1/4 of window)
+      if (prevWx !== null) {
+        const dx=wx-prevWx, dy=wy-prevWy;
+        if (Math.sqrt(dx*dx+dy*dy) > PLANE_R * 0.5) { first=true; }
+      }
+      const px=cx+wx*scale, py=cy-wy*scale;
+      if(first){o.moveTo(px,py);first=false;}else o.lineTo(px,py);
+      prevWx=wx; prevWy=wy;
+    }
+    o.stroke(); o.setLineDash([]);
+  }
+  // origin
+  o.beginPath(); o.arc(cx,cy,4,0,2*Math.PI); o.fillStyle=COL.south; o.fill();
+  // title
+  o.fillStyle=COL.accent; o.font='italic 15px "EB Garamond",serif';
+  const labels={inv1:'f(z) = 1/z',inv4:'f(z) = 1/z⁴',inv20:'f(z) = 1/z²⁰',
+    exp:'f(z) = e^(1/z)',log:'f(z) = Log(z)',sinz:'f(z) = 1/sin(z)', sin1z:'f(z) = sin(1/z)',
+    laurent:`f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`};
+  o.fillText(labels[state.fn]||'', 18, 24);
+  o.fillStyle=COL.muted; o.font='10px "JetBrains Mono",monospace';
+  const pathLabel = state.input === 'mma' ? `mma path  t∈[0,${state.tmax}]` : 'image of spiral';
+  o.fillText(`w-plane  (${pathLabel})  |w| ≤ ${PLANE_R}`, 12, 38);
+  // z-plane inset (static) — auto-scale same as drawInset
+  const ix=IX,iy=IY,ir=IR;
+  const iRadii = spiral.map(([zx,zy])=>Math.sqrt(zx*zx+zy*zy)).sort((a,b)=>a-b);
+  const iRefR = iRadii[Math.floor(iRadii.length*0.8)] || 1;
+  const iScale = (ir*0.85) / iRefR;
+  _insetScale = iScale; // sync for drawMovingDot
+  o.fillStyle='#131311'; o.fillRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
+  o.strokeStyle='#2a2a26'; o.lineWidth=0.5; o.strokeRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
+  o.strokeStyle='#2e2e2a'; o.lineWidth=0.5;
+  o.beginPath(); o.moveTo(ix-ir-4,iy); o.lineTo(ix+ir+4,iy);
+  o.moveTo(ix,iy-ir-4); o.lineTo(ix,iy+ir+4); o.stroke();
+  o.fillStyle=COL.muted; o.font='10px "JetBrains Mono",monospace';
+  o.fillText('z',ix-ir-10,iy-ir-4);
+  o.beginPath(); let sf=true;
+  for(const [zx,zy] of spiral){const px=ix+iScale*zx,py=iy-iScale*zy;if(sf){o.moveTo(px,py);sf=false;}else o.lineTo(px,py);}
+  o.strokeStyle=COL.spiral; o.lineWidth=1.3; o.stroke();
+  o.beginPath(); o.arc(ix,iy,4,0,2*Math.PI); o.fillStyle=COL.south; o.fill();
+
+  _planeCache = { key:`${state.fn}:${state.turns}:${state.terms}`, off, cx, cy, scale, viewR, spiral, PLANE_R };
+}
+
+function drawPlane(t) {
+  const fn = FNS[state.fn];
+
+  if (state.input === 'monte') {
+    const wpts = [];
+    for (const [zx,zy,r] of montePts) {
+      const w = fn([zx,zy]); if (!w) continue;
+      if (!isFinite(w[0]) || !isFinite(w[1])) continue;
+      wpts.push([w[0],w[1],r]);
+    }
+    const cx=W/2, cy=H/2, viewR=Math.min(cx,cy)-30;
+    const PLANE_R = state.planeR, scale = viewR / PLANE_R;
+    ctx.fillStyle=COL.bg; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#222220'; ctx.lineWidth=0.5;
+    for(let r=1; r<=PLANE_R; r++){ctx.beginPath();ctx.arc(cx,cy,r*scale,0,2*Math.PI);ctx.stroke();}
+    ctx.strokeStyle='#2e2e2a'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(cx-viewR,cy); ctx.lineTo(cx+viewR,cy);
+    ctx.moveTo(cx,cy-viewR); ctx.lineTo(cx,cy+viewR); ctx.stroke();
+    for(const [wx,wy,r] of wpts){
+      if(Math.sqrt(wx*wx+wy*wy) > PLANE_R*1.5) continue;
+      const px=Math.round(cx+wx*scale), py=Math.round(cy-wy*scale);
+      if(px<0||px>=W||py<0||py>=H) continue;
+      ctx.fillStyle=radiusColor(r,state.rmin,state.rmax,0.85);
+      ctx.fillRect(px,py,2,2);
+    }
+    ctx.beginPath(); ctx.arc(cx,cy,4,0,2*Math.PI); ctx.fillStyle=COL.south; ctx.fill();
+    _drawZInset(null);
+    ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
+    ctx.fillText(`w-plane  (image of annulus)  |w| ≤ ${PLANE_R}`,12,20);
+    drawTitle(state.fn);
+    return { pt: null };
+  }
+
+  // spiral: use cache for static frame, draw only moving dot fresh
+  const key = `${state.fn}:${state.turns}:${state.terms}`;
+  if (!_planeCache || _planeCache.key !== key) buildPlaneCache();
+  const { off, cx, cy, scale, PLANE_R } = _planeCache;
+  ctx.drawImage(off, 0, 0);
+
+  // moving dot only — clip if outside window
+  const pt = pointAtT(t);
+  const ix=IX, iy=IY;
+  const dx=Math.round(ix+_insetScale*pt.zx), dy=Math.round(iy-_insetScale*pt.zy);
+  ctx.beginPath(); ctx.arc(dx,dy,4,0,2*Math.PI);
+  ctx.fillStyle=COL.spiral; ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=0.8; ctx.stroke();
+  if (pt.wx!==null && isFinite(pt.wx) && isFinite(pt.wy) &&
+      Math.sqrt(pt.wx*pt.wx+pt.wy*pt.wy) <= PLANE_R*1.5) {
+    const px=cx+pt.wx*scale, py2=cy-pt.wy*scale;
+    ctx.beginPath(); ctx.arc(px,py2,5,0,2*Math.PI);
+    ctx.fillStyle=COL.image; ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=0.8; ctx.stroke();
+  }
+  return { pt };
+}
+
+// z-plane inset (monte mode)
+function _drawZInset(spiral) {
+  const ix=IX, iy=IY, ir=IR;
+  ctx.fillStyle='#131311'; ctx.fillRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
+  ctx.strokeStyle='#2a2a26'; ctx.lineWidth=0.5; ctx.strokeRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
+  ctx.strokeStyle='#2e2e2a'; ctx.lineWidth=0.5;
+  ctx.beginPath(); ctx.moveTo(ix-ir-4,iy); ctx.lineTo(ix+ir+4,iy);
+  ctx.moveTo(ix,iy-ir-4); ctx.lineTo(ix,iy+ir+4); ctx.stroke();
+  ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
+  ctx.fillText('z',ix-ir-10,iy-ir-4);
+  if (spiral) {
+    ctx.beginPath(); let first=true;
+    for(const [zx,zy] of spiral){const px=ix+ir*zx,py=iy-ir*zy;if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);}
+    ctx.strokeStyle=COL.spiral; ctx.lineWidth=1.3; ctx.stroke();
+  } else {
+    ctx.strokeStyle='#383634'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.arc(ix,iy,ir*state.rmax,0,2*Math.PI); ctx.stroke();
+    if(state.rmin>0.01){ctx.beginPath(); ctx.arc(ix,iy,ir*state.rmin,0,2*Math.PI); ctx.stroke();}
+    for(const [zx,zy,r] of montePts){
+      ctx.fillStyle=radiusColor(r,state.rmin,state.rmax,0.85);
+      ctx.fillRect(Math.round(ix+ir*zx),Math.round(iy-ir*zy),2,2);
+    }
+  }
+  ctx.beginPath(); ctx.arc(ix,iy,3,0,2*Math.PI); ctx.fillStyle=COL.south; ctx.fill();
+}
+
+function render(overrideT) {
+  const t = overrideT !== undefined ? overrideT : animState.phase;
+
+  if (state.view === 'plane') {
+    const { pt } = drawPlane(t);
+    updateReadout(pt);
+    updateInfo();
+    return;
+  }
+
+  drawSphere(state.tilt, state.spin);
+  if (state.input === 'monte') {
     drawMonte(state.tilt, state.spin);
     drawTitle(state.fn);
     updateReadout(null);
-  } else if (state.mode === 'heatmap') {
-    drawHeatmap(state.tilt, state.spin);
-    drawTitle(state.fn);
-    updateReadout(null);
   } else {
-    const spiral = buildSpiral(state.turns);
-    drawSpiralOnSphere(spiral, state.tilt, state.spin);
+    const spiral = buildActivePath();
+    if (state.input !== 'mma') drawSpiralOnSphere(spiral, state.tilt, state.spin);
     drawImagePath(state.fn, spiral, state.tilt, state.spin);
     drawInset(spiral);
     drawTitle(state.fn);
-    const t = overrideT !== undefined ? overrideT : animState.phase;
     const pt = pointAtT(t);
     drawMovingDot(pt, state.tilt, state.spin);
     updateReadout(pt);
@@ -1302,8 +1345,20 @@ function setPlaying(on) {
 }
 
 // ── controls ──────────────────────────────────────────────────────────────
+function updateParamVisibility() {
+  const isMonte = state.input === 'monte';
+  const isMma   = state.input === 'mma';
+  const isSphere = state.view === 'sphere';
+  const isPlane  = state.view === 'plane';
+  document.getElementById('spiral-params').style.display = (!isMonte && !isMma) ? 'block' : 'none';
+  document.getElementById('mma-params').style.display    = isMma   ? 'block' : 'none';
+  document.getElementById('monte-params').style.display  = isMonte ? 'block' : 'none';
+  document.getElementById('sphere-params').style.display = isSphere ? 'block' : 'none';
+  document.getElementById('plane-params').style.display  = isPlane  ? 'block' : 'none';
+}
+
 document.getElementById('play-btn').addEventListener('click', () => {
-  if (state.mode === 'monte' || state.mode === 'heatmap') return;
+  if (state.input === 'monte') return;
   setPlaying(!animState.playing);
 });
 
@@ -1322,48 +1377,66 @@ document.getElementById('resample-btn').addEventListener('click', () => {
   buildMontePts(); render();
 });
 
-document.querySelectorAll('.mode-btn').forEach(btn => {
+document.querySelectorAll('.input-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mode-btn').forEach(b => {
+    setPlaying(false);
+    document.querySelectorAll('.input-btn').forEach(b => {
       b.style.color = 'var(--muted)'; b.style.borderColor = 'var(--border)';
-      b.classList.remove('active');
     });
     btn.style.color = 'var(--accent)'; btn.style.borderColor = 'var(--accent)';
-    btn.classList.add('active');
-    state.mode = btn.dataset.mode;
-    const isMonte = state.mode === 'monte' || state.mode === 'heatmap';
-    document.getElementById('spiral-params').style.display = isMonte ? 'none' : 'block';
-    document.getElementById('monte-params').style.display  = isMonte ? 'block' : 'none';
-    if (state.mode === 'monte') { setPlaying(false); buildMontePts(); }
-    if (state.mode === 'heatmap') { setPlaying(false); }
+    state.input = btn.dataset.input;
+    if (state.input === 'monte') buildMontePts();
+    state._planeRAutofit = true;
+    _planeCache = null;
+    updateParamVisibility();
+    render(animState.phase);
+  });
+});
+
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setPlaying(false);
+    document.querySelectorAll('.view-btn').forEach(b => {
+      b.style.color = 'var(--muted)'; b.style.borderColor = 'var(--border)';
+    });
+    btn.style.color = 'var(--accent)'; btn.style.borderColor = 'var(--accent)';
+    state.view = btn.dataset.view;
+    if (state.view === 'plane') { state._planeRAutofit = true; _planeCache = null; }
+    updateParamVisibility();
     render(animState.phase);
   });
 });
 
 document.querySelectorAll('.fn-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    setPlaying(false);
     document.querySelectorAll('.fn-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.fn = btn.dataset.fn;
+    state._planeRAutofit = true;
+    _planeCache = null;
     render(animState.phase);
   });
 });
 
 [['turns',''], ['tilt','°'], ['spin','°'], ['terms',''],
- ['numpts',''], ['rmin',''], ['rmax','']].forEach(([id, suffix]) => {
+ ['numpts',''], ['rmin',''], ['rmax',''], ['planeR',''], ['tmax','']].forEach(([id, suffix]) => {
   const el = document.getElementById(id);
   if (!el) return;
   const out = document.getElementById(id+'-out');
   el.addEventListener('input', () => {
+    if (id === 'turns' || id === 'terms' || id === 'tmax') { setPlaying(false); state._planeRAutofit = true; _planeCache = null; }
+    if (id === 'planeR') { _planeCache = null; } // user-set: no autofit
     state[id] = parseFloat(el.value);
     out.textContent = el.value + suffix;
-    if ((id === 'rmin' || id === 'rmax' || id === 'numpts') && state.mode === 'monte') {
+    if ((id === 'rmin' || id === 'rmax' || id === 'numpts') && state.input === 'monte') {
       buildMontePts();
     }
     render(animState.phase);
   });
 });
 
+updateParamVisibility();
 buildMontePts();
 render(0);
 </script>
