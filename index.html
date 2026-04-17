@@ -361,38 +361,54 @@
   <div class="panel">
     <div class="ctrl-group">
       <h2>Function</h2>
-      <button class="fn-btn active" data-fn="inv1">
-        <span class="math">f(z) = 1/z</span>
-        <span class="type">Simple pole, order 1</span>
-      </button>
-      <button class="fn-btn" data-fn="inv4">
-        <span class="math">f(z) = 1/z⁴</span>
-        <span class="type">Pole, order 4</span>
-      </button>
-      <button class="fn-btn" data-fn="inv20">
-        <span class="math">f(z) = 1/z<sup>20</sup></span>
-        <span class="type">Pole, order 20</span>
-      </button>
-      <button class="fn-btn" data-fn="exp">
-        <span class="math">f(z) = e^(1/z)</span>
-        <span class="type">Essential singularity</span>
-      </button>
-      <button class="fn-btn" data-fn="laurent">
-        <span class="math">f(z) = Σ 1/(k! zᵏ)</span>
-        <span class="type">Laurent truncation of e^(1/z)</span>
-      </button>
-      <button class="fn-btn" data-fn="log">
-        <span class="math">f(z) = Log(z)</span>
-        <span class="type">Branch point</span>
-      </button>
-      <button class="fn-btn" data-fn="sinz">
-        <span class="math">f(z) = 1/sin(z)</span>
-        <span class="type">Simple poles at nπ</span>
-      </button>
-      <button class="fn-btn" data-fn="sin1z">
-        <span class="math">f(z) = sin(1/z)</span>
-        <span class="type">Essential singularity</span>
-      </button>
+
+      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem;margin-bottom:0.6rem">
+        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Simple poles</div>
+        <button class="fn-btn active" data-fn="inv1">
+          <span class="math">f(z) = 1/z</span>
+          <span class="type">Order 1 at z = 0</span>
+        </button>
+        <button class="fn-btn" data-fn="sinz">
+          <span class="math">f(z) = 1/sin(z)</span>
+          <span class="type">Simple poles at z = nπ</span>
+        </button>
+      </div>
+
+      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem;margin-bottom:0.6rem">
+        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Higher-order poles</div>
+        <button class="fn-btn" data-fn="inv4">
+          <span class="math">f(z) = 1/z⁴</span>
+          <span class="type">Order 4 at z = 0</span>
+        </button>
+        <button class="fn-btn" data-fn="inv20">
+          <span class="math">f(z) = 1/z<sup>20</sup></span>
+          <span class="type">Order 20 at z = 0</span>
+        </button>
+      </div>
+
+      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem;margin-bottom:0.6rem">
+        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Essential singularities</div>
+        <button class="fn-btn" data-fn="exp">
+          <span class="math">f(z) = e^(1/z)</span>
+          <span class="type">Essential at z = 0</span>
+        </button>
+        <button class="fn-btn" data-fn="sin1z">
+          <span class="math">f(z) = sin(1/z)</span>
+          <span class="type">Essential at z = 0</span>
+        </button>
+        <button class="fn-btn" data-fn="laurent">
+          <span class="math">f(z) = Σ 1/(k! zᵏ)</span>
+          <span class="type">Laurent truncation of e^(1/z)</span>
+        </button>
+      </div>
+
+      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem">
+        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Branch point</div>
+        <button class="fn-btn" data-fn="log">
+          <span class="math">f(z) = Log(z)</span>
+          <span class="type">Branch point at z = 0</span>
+        </button>
+      </div>
     </div>
 
     <div class="ctrl-group">
