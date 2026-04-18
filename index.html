@@ -102,50 +102,62 @@
     margin-bottom: 0.8rem;
   }
 
-  .fn-btn {
-    display: block;
+  .fn-select-wrap {
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .fn-select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 0.8rem;
+    pointer-events: none;
+  }
+
+  #fn-select {
     width: 100%;
-    text-align: left;
-    background: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 3px;
-    padding: 0.5rem 0.7rem;
-    margin-bottom: 0.4rem;
-    cursor: pointer;
-    color: var(--text);
-    font-family: 'EB Garamond', serif;
-    font-size: 0.95rem;
-    transition: border-color 0.15s, background 0.15s;
-    line-height: 1.35;
-  }
-
-  .fn-btn:last-child { margin-bottom: 0; }
-
-  .fn-btn .math {
-    display: block;
+    color: var(--accent);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.78rem;
-    color: var(--accent);
-    margin-bottom: 0.15rem;
+    padding: 0.45rem 2rem 0.45rem 0.7rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
   }
 
-  .fn-btn .type {
-    font-size: 0.78rem;
+  #fn-select:hover, #fn-select:focus {
+    border-color: var(--accent);
+  }
+
+  #fn-select option {
+    background: #1a1a18;
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  #fn-select optgroup {
     color: var(--muted);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .fn-desc {
+    font-size: 0.78rem;
     font-style: italic;
+    color: var(--muted);
+    line-height: 1.45;
+    min-height: 2.5em;
   }
-
-  .fn-btn:hover {
-    border-color: var(--accent);
-    background: rgba(200, 169, 110, 0.05);
-  }
-
-  .fn-btn.active {
-    border-color: var(--accent);
-    background: rgba(200, 169, 110, 0.08);
-  }
-
-  .fn-btn.active .math { color: #e8c880; }
 
   .slider-row {
     display: flex;
@@ -228,6 +240,7 @@
   .pole    { background: rgba(90,159,212,0.15); color: var(--image); border: 1px solid rgba(90,159,212,0.3); }
   .ess     { background: rgba(224,96,64,0.15);  color: var(--spiral); border: 1px solid rgba(224,96,64,0.3); }
   .branch  { background: rgba(200,169,110,0.15); color: var(--accent); border: 1px solid rgba(200,169,110,0.3); }
+  .removable { background: rgba(107,191,160,0.15); color: var(--north); border: 1px solid rgba(107,191,160,0.3); }
 
   .info-desc {
     font-size: 0.9rem;
@@ -361,54 +374,34 @@
   <div class="panel">
     <div class="ctrl-group">
       <h2>Function</h2>
-
-      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem;margin-bottom:0.6rem">
-        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Simple poles</div>
-        <button class="fn-btn active" data-fn="inv1">
-          <span class="math">f(z) = 1/z</span>
-          <span class="type">Order 1 at z = 0</span>
-        </button>
-        <button class="fn-btn" data-fn="sinz">
-          <span class="math">f(z) = 1/sin(z)</span>
-          <span class="type">Simple poles at z = nπ</span>
-        </button>
+      <div class="fn-select-wrap">
+        <select id="fn-select">
+          <optgroup label="Simple poles">
+            <option value="inv1">f(z) = 1/z — order 1 at z = 0</option>
+            <option value="sinz">f(z) = 1/sin(z) — poles at z = nπ</option>
+          </optgroup>
+          <optgroup label="Higher-order poles">
+            <option value="inv4">f(z) = 1/z⁴ — order 4 at z = 0</option>
+            <option value="inv20">f(z) = 1/z²⁰ — order 20 at z = 0</option>
+          </optgroup>
+          <optgroup label="Multiple poles">
+            <option value="twopoles">f(z) = 1/(z(z−1)) — poles at 0 and 1</option>
+            <option value="gamma">f(z) = Γ(z) — poles at 0, −1, −2, …</option>
+          </optgroup>
+          <optgroup label="Essential singularities">
+            <option value="exp">f(z) = e^(1/z) — essential at z = 0</option>
+            <option value="sin1z">f(z) = sin(1/z) — essential at z = 0</option>
+            <option value="laurent">f(z) = Σ 1/(k! zᵏ) — Laurent truncation</option>
+          </optgroup>
+          <optgroup label="Branch point">
+            <option value="log">f(z) = Log(z) — branch point at z = 0</option>
+          </optgroup>
+          <optgroup label="Removable singularity">
+            <option value="sinc">f(z) = sin(z)/z — removable, limit = 1</option>
+          </optgroup>
+        </select>
       </div>
-
-      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem;margin-bottom:0.6rem">
-        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Higher-order poles</div>
-        <button class="fn-btn" data-fn="inv4">
-          <span class="math">f(z) = 1/z⁴</span>
-          <span class="type">Order 4 at z = 0</span>
-        </button>
-        <button class="fn-btn" data-fn="inv20">
-          <span class="math">f(z) = 1/z<sup>20</sup></span>
-          <span class="type">Order 20 at z = 0</span>
-        </button>
-      </div>
-
-      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem;margin-bottom:0.6rem">
-        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Essential singularities</div>
-        <button class="fn-btn" data-fn="exp">
-          <span class="math">f(z) = e^(1/z)</span>
-          <span class="type">Essential at z = 0</span>
-        </button>
-        <button class="fn-btn" data-fn="sin1z">
-          <span class="math">f(z) = sin(1/z)</span>
-          <span class="type">Essential at z = 0</span>
-        </button>
-        <button class="fn-btn" data-fn="laurent">
-          <span class="math">f(z) = Σ 1/(k! zᵏ)</span>
-          <span class="type">Laurent truncation of e^(1/z)</span>
-        </button>
-      </div>
-
-      <div style="border:1px solid #2a2a26;border-radius:6px;padding:0.5rem 0.6rem">
-        <div style="font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Branch point</div>
-        <button class="fn-btn" data-fn="log">
-          <span class="math">f(z) = Log(z)</span>
-          <span class="type">Branch point at z = 0</span>
-        </button>
-      </div>
+      <div class="fn-desc" id="fn-desc"></div>
     </div>
 
     <div class="ctrl-group">
@@ -420,9 +413,12 @@
         <button class="input-btn" data-input="monte" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">monte carlo</button>
       </div>
       <div style="margin-bottom:0.4rem;font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">View</div>
-      <div style="display:flex;gap:6px;margin-bottom:0.8rem">
+      <div style="display:flex;gap:6px;margin-bottom:0.4rem">
         <button class="view-btn active" data-view="sphere" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--accent);cursor:pointer;transition:border-color 0.15s,background 0.15s">sphere</button>
         <button class="view-btn" data-view="plane" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">w-plane</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:0.8rem">
+        <button id="domain-toggle" style="flex:1;padding:4px 0;font-size:0.75rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;transition:border-color 0.15s,background 0.15s">domain color: off</button>
       </div>
       <div id="spiral-params">
         <div class="slider-row">
@@ -434,8 +430,11 @@
       <div id="mma-params" style="display:none">
         <div class="slider-row">
           <span class="slider-label">t max</span>
-          <input type="range" id="tmax" min="5" max="100" step="5" value="30">
+          <input type="range" id="tmax" min="0" max="100" step="1" value="25">
           <span class="slider-val" id="tmax-out">30</span>
+        </div>
+        <div style="font-size:0.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:0.4rem;line-height:1.4">
+          r ≈ <span id="tmax-rout">0.18</span> at origin end
         </div>
       </div>
       <div id="monte-params" style="display:none">
@@ -446,12 +445,12 @@
         </div>
         <div class="slider-row">
           <span class="slider-label">r min</span>
-          <input type="range" id="rmin" min="0.01" max="0.9" step="0.01" value="0.05">
+          <input type="range" id="rmin" min="0.01" max="1.0" step="0.01" value="0.05">
           <span class="slider-val" id="rmin-out">.05</span>
         </div>
         <div class="slider-row">
           <span class="slider-label">r max</span>
-          <input type="range" id="rmax" min="0.05" max="1.0" step="0.01" value="0.5">
+          <input type="range" id="rmax" min="0.01" max="1.0" step="0.01" value="0.5">
           <span class="slider-val" id="rmax-out">.50</span>
         </div>
         <button id="resample-btn" style="width:100%;margin-top:4px;padding:5px 0;font-size:0.72rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--accent);cursor:pointer">resample ↺</button>
@@ -466,6 +465,11 @@
         <span class="slider-label">Spin</span>
         <input type="range" id="spin" min="-60" max="60" value="-51">
         <span class="slider-val" id="spin-out">-51°</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:0.4rem">
+        <button class="view-preset-btn" data-tilt="-61" data-spin="-51" style="flex:1;padding:3px 0;font-size:0.68rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer">default</button>
+        <button class="view-preset-btn" data-tilt="-75" data-spin="0" style="flex:1;padding:3px 0;font-size:0.68rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer">top (∞)</button>
+        <button class="view-preset-btn" data-tilt="75" data-spin="0" style="flex:1;padding:3px 0;font-size:0.68rem;font-family:'JetBrains Mono',monospace;background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer">bottom (0)</button>
       </div>
       </div>
       <div id="plane-params" style="display:none">
@@ -567,6 +571,12 @@ const INFOS = {
     desc: '1/sin(z) has simple poles at every integer multiple of π. Near z=0, sin(z)≈z so 1/sin(z)≈1/z — the singularity at the origin looks just like a simple pole. But the spiral also passes near ±π, ±2π, … producing additional pole-like excursions. The image on the sphere converges to ∞ each time the spiral passes near any nπ.' },
   sin1z: { cls: 'ess', label: 'Essential singularity — sin(1/z)',
     desc: 'sin(1/z) has an essential singularity at 0. Unlike e^(1/z) which omits the value 0, sin(1/z) takes every complex value in any punctured neighborhood of 0 — its Picard exceptional set is empty. Near the real axis, sin(1/x) oscillates between −1 and 1 infinitely rapidly; in the complex plane the image fills ℂ entirely.' },
+  twopoles: { cls: 'pole', label: 'Two simple poles',
+    desc: '1/(z(z−1)) has simple poles at z=0 and z=1. As the spiral approaches 0 the image → ∞, but when the path passes near z=1 it makes a second excursion to ∞. On the sphere you can watch both poles attract the image path to the north pole at different moments. The partial fractions 1/z − 1/(z−1) show how the two poles compete.' },
+  gamma: { cls: 'pole', label: 'Gamma function — infinitely many poles',
+    desc: 'Γ(z) extends the factorial: Γ(n+1)=n! for positive integers. It has simple poles at z=0,−1,−2,… with residues (−1)ⁿ/n! The spiral, which samples small |z|, visits the pole at 0 and the family of poles on the negative real axis. On the sphere the image path visits the north pole (∞) repeatedly, once per pole encountered — a spectacular demonstration of an infinite discrete pole set.' },
+  sinc: { cls: 'removable', label: 'Removable singularity',
+    desc: 'sin(z)/z appears to have a singularity at z=0, but the Taylor series sin(z)=z−z³/6+… makes f(z)=1−z²/6+… analytic. The limit as z→0 is exactly 1. On the sphere the image path converges to a well-defined finite point — not the north pole (∞) nor any wild cluster. Removable singularities are the mildest possible: the function is bounded and extendable.' },
 };
 
 const FNS = {
@@ -635,6 +645,75 @@ const FNS = {
     const si = Math.cos(invRe)*Math.sinh(invIm);
     if (!isFinite(sr) || !isFinite(si)) return null;
     return [sr, si];
+  },
+  // Two simple poles: 1/(z*(z-1))  = 1/z - 1/(z-1)
+  twopoles: ([x,y]) => {
+    const r2 = x*x+y*y; if(r2<1e-20) return null;
+    // 1/z
+    const aRe = x/r2, aIm = -y/r2;
+    // 1/(z-1): denominator = (x-1)^2+y^2
+    const dx=x-1, d2=dx*dx+y*y; if(d2<1e-20) return null;
+    const bRe = dx/d2, bIm = -y/d2;
+    return [aRe - bRe, aIm - bIm];
+  },
+  // Gamma function via Lanczos approximation (complex)
+  gamma: ([x,y]) => {
+    // reflection for Re(z)<0.5: Γ(z)Γ(1-z)=π/sin(πz)
+    if (x < 0.5) {
+      // Γ(z) = π / (sin(πz) * Γ(1-z))
+      // sin(π(x+iy)) = sin(πx)cosh(πy) + i cos(πx)sinh(πy)
+      const sinRe = Math.sin(Math.PI*x)*Math.cosh(Math.PI*y);
+      const sinIm = Math.cos(Math.PI*x)*Math.sinh(Math.PI*y);
+      const s2 = sinRe*sinRe+sinIm*sinIm;
+      if(s2<1e-40) return null;
+      const g = FNS.gamma([1-x,-y]); // Γ(1-z̄)=conj(Γ(1-z))
+      if(!g) return null;
+      // π / (sin(πz) * g)
+      const prodRe = sinRe*g[0]-sinIm*g[1], prodIm=sinRe*g[1]+sinIm*g[0];
+      const p2=prodRe*prodRe+prodIm*prodIm; if(p2<1e-40) return null;
+      return [Math.PI*prodRe/p2, -Math.PI*prodIm/p2];
+    }
+    // Lanczos g=7 coefficients
+    const g=7;
+    const c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,
+             771.32342877765313,-176.61502916214059,12.507343278686905,
+             -0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    // z is complex: (x,y), we want Γ(z) with z shifted by -1
+    let zr=x-1, zi=y;
+    let xr=c[0], xi=0;
+    for(let i=1;i<g+2;i++){
+      const dr=(zr+i), di=zi, d2=dr*dr+di*di;
+      if(d2<1e-40) return null;
+      xr += c[i]*dr/d2;
+      xi -= c[i]*di/d2;
+    }
+    // t = z + g - 0.5
+    const tr=zr+g-0.5+1, ti=zi; // +1 because zr=z-1
+    // Γ(z) = sqrt(2π) * t^(z-0.5) * exp(-t) * x
+    const logTr=0.5*Math.log(tr*tr+ti*ti), logTi=Math.atan2(ti,tr);
+    // (z-0.5) * log(t)
+    const ar=(x-0.5)*logTr - y*logTi;
+    const ai=(x-0.5)*logTi + y*logTr;
+    const magT=Math.exp(ar-tr);
+    if(!isFinite(magT)||magT===0) return null;
+    const cosAi=Math.cos(ai-ti), sinAi=Math.sin(ai-ti);
+    const sqr2pi=Math.sqrt(2*Math.PI);
+    // multiply: sqr2pi * magT*(cosAi+i sinAi) * (xr+i xi)
+    const pr=magT*(cosAi*xr-sinAi*xi), pi2=magT*(cosAi*xi+sinAi*xr);
+    const re=sqr2pi*pr, im=sqr2pi*pi2;
+    if(!isFinite(re)||!isFinite(im)) return null;
+    return [re,im];
+  },
+  // sinc: sin(z)/z — removable singularity at 0, limit=1
+  sinc: ([x,y]) => {
+    const r2=x*x+y*y;
+    if(r2<1e-20) return [1,0]; // limit
+    // sin(x+iy) = sin(x)cosh(y) + i cos(x)sinh(y)
+    if(Math.abs(y)>700) return null;
+    const sr=Math.sin(x)*Math.cosh(y), si=Math.cos(x)*Math.sinh(y);
+    // divide by z=(x+iy)
+    const re=(sr*x+si*y)/r2, im=(si*x-sr*y)/r2;
+    return [re,im];
   },
 };
 
@@ -867,9 +946,17 @@ function drawInset(spiral) {
   ctx.fillStyle=COL.muted; ctx.font='10px "JetBrains Mono",monospace';
   ctx.fillText('ℂ',ix-ir-10,iy-ir-4);
 
-  // auto-scale: 80th percentile radius fills the inset
+  // auto-scale: for mma path, scale so the innermost point (smallest r) sits
+  // at ~15% from center — this keeps the tight inner loops visible as t grows.
+  // For spiral, 80th percentile keeps the outer loops in frame.
   const radii = spiral.map(([zx,zy]) => Math.sqrt(zx*zx+zy*zy)).sort((a,b)=>a-b);
-  const refR = radii[Math.floor(radii.length * 0.8)] || 1;
+  let refR;
+  if (state.input === 'mma') {
+    const rMin = radii[0] || 0.01;
+    refR = rMin / 0.15; // place innermost point at 15% of inset radius
+  } else {
+    refR = radii[Math.floor(radii.length * 0.8)] || 1;
+  }
   const scale = (ir * 0.85) / refR;
   _insetScale = scale; // store for drawMovingDot
 
@@ -906,6 +993,7 @@ function drawTitle(fnKey) {
   const labels={
     inv1:'f(z) = 1/z', inv4:'f(z) = 1/z⁴', inv20:'f(z) = 1/z²⁰',
     exp:'f(z) = e^(1/z)', log:'f(z) = Log(z)', sinz:'f(z) = 1/sin(z)', sin1z:'f(z) = sin(1/z)',
+    twopoles:'f(z) = 1/(z(z−1))', gamma:'f(z) = Γ(z)', sinc:'f(z) = sin(z)/z',
     laurent: `f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`
   };
   ctx.fillText(labels[fnKey], 18, 24);
@@ -937,10 +1025,12 @@ function radiusColor(r, rmin, rmax, alpha=1) {
 
 // ── monte carlo sample ────────────────────────────────────────────────────
 function buildMontePts() {
-  const n = state.numpts, rmin = state.rmin, rmax = state.rmax;
+  const n = state.numpts;
+  const rlo = Math.min(state.rmin, state.rmax);
+  const rhi = Math.max(state.rmin, state.rmax);
   montePts = [];
   for (let i = 0; i < n; i++) {
-    const r = Math.sqrt(Math.random() * (rmax*rmax - rmin*rmin) + rmin*rmin);
+    const r = Math.sqrt(Math.random() * (rhi*rhi - rlo*rlo) + rlo*rlo);
     const theta = Math.random() * 2 * Math.PI;
     montePts.push([r * Math.cos(theta), r * Math.sin(theta), r]);
   }
@@ -1186,6 +1276,7 @@ function buildPlaneCache() {
   o.fillStyle=COL.accent; o.font='italic 15px "EB Garamond",serif';
   const labels={inv1:'f(z) = 1/z',inv4:'f(z) = 1/z⁴',inv20:'f(z) = 1/z²⁰',
     exp:'f(z) = e^(1/z)',log:'f(z) = Log(z)',sinz:'f(z) = 1/sin(z)', sin1z:'f(z) = sin(1/z)',
+    twopoles:'f(z) = 1/(z(z−1))', gamma:'f(z) = Γ(z)', sinc:'f(z) = sin(z)/z',
     laurent:`f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`};
   o.fillText(labels[state.fn]||'', 18, 24);
   o.fillStyle=COL.muted; o.font='10px "JetBrains Mono",monospace';
@@ -1194,7 +1285,13 @@ function buildPlaneCache() {
   // z-plane inset (static) — auto-scale same as drawInset
   const ix=IX,iy=IY,ir=IR;
   const iRadii = spiral.map(([zx,zy])=>Math.sqrt(zx*zx+zy*zy)).sort((a,b)=>a-b);
-  const iRefR = iRadii[Math.floor(iRadii.length*0.8)] || 1;
+  let iRefR;
+  if (state.input === 'mma') {
+    const rMin = iRadii[0] || 0.01;
+    iRefR = rMin / 0.15;
+  } else {
+    iRefR = iRadii[Math.floor(iRadii.length*0.8)] || 1;
+  }
   const iScale = (ir*0.85) / iRefR;
   _insetScale = iScale; // sync for drawMovingDot
   o.fillStyle='#131311'; o.fillRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
@@ -1210,6 +1307,7 @@ function buildPlaneCache() {
   o.beginPath(); o.arc(ix,iy,4,0,2*Math.PI); o.fillStyle=COL.south; o.fill();
 
   _planeCache = { key:`${state.fn}:${state.turns}:${state.terms}`, off, cx, cy, scale, viewR, spiral, PLANE_R };
+  if (state.domainColor) _rebuildPlaneCacheWithDomain();
 }
 
 function drawPlane(t) {
@@ -1337,7 +1435,14 @@ function updateInfo() {
   }
 }
 
-// ── animation loop ────────────────────────────────────────────────────────
+// tmax slider is log-scale: slider 0..100 maps to tmax 5..5000
+function tmaxFromSlider(v) { return Math.round(5 * Math.pow(1000, v / 100)); }
+function tmaxToSlider(t)   { return Math.round(Math.log(t / 5) / Math.log(1000) * 100); }
+
+// initialise state.tmax from slider default
+state.tmax = tmaxFromSlider(25); // ≈ 30
+
+
 function animate(ts) {
   if (!animState.playing) return;
   if (animState.lastTime === null) animState.lastTime = ts;
@@ -1423,17 +1528,23 @@ document.querySelectorAll('.view-btn').forEach(btn => {
   });
 });
 
-document.querySelectorAll('.fn-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    setPlaying(false);
-    document.querySelectorAll('.fn-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.fn = btn.dataset.fn;
-    state._planeRAutofit = true;
-    _planeCache = null;
-    render(animState.phase);
-  });
+// ── function select ───────────────────────────────────────────────────────
+function updateFnDesc() {
+  const info = INFOS[state.fn];
+  const el = document.getElementById('fn-desc');
+  if (el && info) el.textContent = info.desc.split('.')[0] + '.'; // first sentence only
+}
+
+document.getElementById('fn-select').addEventListener('change', function() {
+  setPlaying(false);
+  state.fn = this.value;
+  state._planeRAutofit = true;
+  _planeCache = null;
+  updateFnDesc();
+  render(animState.phase);
 });
+
+updateFnDesc();
 
 [['turns',''], ['tilt','°'], ['spin','°'], ['terms',''],
  ['numpts',''], ['rmin',''], ['rmax',''], ['planeR',''], ['tmax','']].forEach(([id, suffix]) => {
@@ -1442,9 +1553,28 @@ document.querySelectorAll('.fn-btn').forEach(btn => {
   const out = document.getElementById(id+'-out');
   el.addEventListener('input', () => {
     if (id === 'turns' || id === 'terms' || id === 'tmax') { setPlaying(false); state._planeRAutofit = true; _planeCache = null; }
-    if (id === 'planeR') { _planeCache = null; } // user-set: no autofit
-    state[id] = parseFloat(el.value);
-    out.textContent = el.value + suffix;
+    if (id === 'planeR') { _planeCache = null; }
+    if (id === 'tmax') {
+      state.tmax = tmaxFromSlider(parseFloat(el.value));
+      out.textContent = state.tmax;
+      const rEnd = (1 / Math.sqrt(state.tmax + 0.01)).toFixed(4);
+      const rOutEl = document.getElementById('tmax-rout');
+      if (rOutEl) rOutEl.textContent = rEnd;
+    } else {
+      state[id] = parseFloat(el.value);
+      out.textContent = el.value + suffix;
+    }
+    if (id === 'rmin' && state.rmin > state.rmax) {
+      state.rmax = state.rmin;
+      const rmaxEl = document.getElementById('rmax');
+      if (rmaxEl) { rmaxEl.value = state.rmax; document.getElementById('rmax-out').textContent = state.rmax.toFixed(2); }
+    }
+    if (id === 'rmax' && state.rmax < state.rmin) {
+      state.rmin = state.rmax;
+      const rminEl = document.getElementById('rmin');
+      if (rminEl) { rminEl.value = state.rmin; document.getElementById('rmin-out').textContent = state.rmin.toFixed(2); }
+    }
+
     if ((id === 'rmin' || id === 'rmax' || id === 'numpts') && state.input === 'monte') {
       buildMontePts();
     }
@@ -1452,9 +1582,278 @@ document.querySelectorAll('.fn-btn').forEach(btn => {
   });
 });
 
-updateParamVisibility();
-buildMontePts();
-render(0);
+document.querySelectorAll('.view-preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.tilt = parseFloat(btn.dataset.tilt);
+    state.spin = parseFloat(btn.dataset.spin);
+    const tiltEl = document.getElementById('tilt'), spinEl = document.getElementById('spin');
+    if (tiltEl) { tiltEl.value = state.tilt; document.getElementById('tilt-out').textContent = Math.round(state.tilt) + '°'; }
+    if (spinEl) { spinEl.value = state.spin; document.getElementById('spin-out').textContent = Math.round(state.spin) + '°'; }
+    render(animState.phase);
+  });
+});
+
+
+
+// ── drag to rotate sphere ─────────────────────────────────────────────────
+let _drag = null;
+canvas.style.cursor = 'grab';
+
+canvas.addEventListener('mousedown', e => {
+  if (state.view !== 'sphere') return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  _drag = { x: e.clientX * scaleX, y: e.clientY * scaleY, tilt: state.tilt, spin: state.spin };
+  canvas.style.cursor = 'grabbing';
+  e.preventDefault();
+});
+
+window.addEventListener('mousemove', e => {
+  if (!_drag) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  const dx = e.clientX * scaleX - _drag.x;
+  const dy = e.clientY * scaleY - _drag.y;
+  // dy → tilt, dx → spin
+  state.tilt = Math.max(-75, Math.min(75, _drag.tilt + dy * 0.35));
+  state.spin = Math.max(-60, Math.min(60, _drag.spin + dx * 0.35));
+  // sync sliders
+  const tiltEl = document.getElementById('tilt'), spinEl = document.getElementById('spin');
+  if (tiltEl) { tiltEl.value = state.tilt; document.getElementById('tilt-out').textContent = Math.round(state.tilt)+'°'; }
+  if (spinEl) { spinEl.value = state.spin; document.getElementById('spin-out').textContent = Math.round(state.spin)+'°'; }
+  if (!animState.playing) render(animState.phase);
+});
+
+window.addEventListener('mouseup', () => {
+  _drag = null;
+  canvas.style.cursor = state.view === 'sphere' ? 'grab' : 'default';
+});
+
+// touch support for mobile
+canvas.addEventListener('touchstart', e => {
+  if (state.view !== 'sphere' || e.touches.length !== 1) return;
+  const t = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width, scaleY = H / rect.height;
+  _drag = { x: t.clientX*scaleX, y: t.clientY*scaleY, tilt: state.tilt, spin: state.spin };
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  if (!_drag || e.touches.length !== 1) return;
+  const t = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width, scaleY = H / rect.height;
+  const dx = t.clientX*scaleX - _drag.x, dy = t.clientY*scaleY - _drag.y;
+  state.tilt = Math.max(-75, Math.min(75, _drag.tilt + dy * 0.35));
+  state.spin = Math.max(-60, Math.min(60, _drag.spin + dx * 0.35));
+  const tiltEl = document.getElementById('tilt'), spinEl = document.getElementById('spin');
+  if (tiltEl) { tiltEl.value = state.tilt; document.getElementById('tilt-out').textContent = Math.round(state.tilt)+'°'; }
+  if (spinEl) { spinEl.value = state.spin; document.getElementById('spin-out').textContent = Math.round(state.spin)+'°'; }
+  if (!animState.playing) render(animState.phase);
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener('touchend', () => { _drag = null; });
+
+// update cursor when switching views
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    canvas.style.cursor = btn.dataset.view === 'sphere' ? 'grab' : 'default';
+  });
+});
+
+// ── domain coloring toggle ────────────────────────────────────────────────
+state.domainColor = false;
+const domBtn = document.getElementById('domain-toggle');
+domBtn.addEventListener('click', () => {
+  state.domainColor = !state.domainColor;
+  domBtn.textContent = `domain color: ${state.domainColor ? 'on' : 'off'}`;
+  domBtn.style.color = state.domainColor ? 'var(--accent)' : 'var(--muted)';
+  domBtn.style.borderColor = state.domainColor ? 'var(--accent)' : 'var(--border)';
+  _planeCache = null;
+  render(animState.phase);
+});
+
+// ── domain coloring renderer (w-plane) ───────────────────────────────────
+function drawDomainColoring(cx, cy, scale, PLANE_R, o) {
+  const fn = FNS[state.fn];
+  // sample each pixel in the view window
+  const viewPixR = Math.ceil(PLANE_R * scale);
+  const x0 = Math.round(cx - viewPixR), y0 = Math.round(cy - viewPixR);
+  const size = viewPixR * 2;
+  const imgData = o.createImageData(size, size);
+  const d = imgData.data;
+  for (let py = 0; py < size; py++) {
+    for (let px = 0; px < size; px++) {
+      // map pixel to complex z
+      const zx = (px + x0 - cx) / scale;
+      const zy = -(py + y0 - cy) / scale;
+      const w = fn([zx, zy]);
+      if (!w || !isFinite(w[0]) || !isFinite(w[1])) {
+        const idx=(py*size+px)*4;
+        d[idx]=10;d[idx+1]=10;d[idx+2]=10;d[idx+3]=255;
+        continue;
+      }
+      const [wr, wi] = w;
+      const arg = Math.atan2(wi, wr); // -π..π
+      const mod = Math.sqrt(wr*wr+wi*wi);
+      // hue from argument
+      const hue = ((arg / Math.PI + 1) / 2); // 0..1
+      // brightness modulated by log of modulus (creates contour rings)
+      const logM = Math.log(mod+1e-10);
+      const bright = 0.38 + 0.22 * (logM - Math.floor(logM)); // sawtooth 0.38..0.60
+      // saturation
+      const sat = 0.85;
+      // HSV→RGB
+      const h6 = hue * 6, i = Math.floor(h6), f = h6 - i;
+      const p = bright*(1-sat), q = bright*(1-sat*f), t2 = bright*(1-sat*(1-f));
+      let r,g,b;
+      switch(i%6){
+        case 0:r=bright;g=t2;b=p;break; case 1:r=q;g=bright;b=p;break;
+        case 2:r=p;g=bright;b=t2;break; case 3:r=p;g=q;b=bright;break;
+        case 4:r=t2;g=p;b=bright;break; default:r=bright;g=p;b=q;
+      }
+      const idx=(py*size+px)*4;
+      d[idx]=Math.round(r*255);d[idx+1]=Math.round(g*255);d[idx+2]=Math.round(b*255);d[idx+3]=200;
+    }
+  }
+  o.putImageData(imgData, x0, y0);
+}
+
+// _rebuildPlaneCacheWithDomain() is called after buildPlaneCache() when domainColor is on
+function _rebuildPlaneCacheWithDomain() {
+  const fn = FNS[state.fn];
+  const spiral = buildActivePath();
+  const wpts = [];
+  for (const [zx,zy] of spiral) {
+    const w = fn([zx,zy]); if (!w) continue;
+    if (!isFinite(w[0]) || !isFinite(w[1])) continue;
+    wpts.push(w);
+  }
+  const cx = W/2, cy = H/2, viewR = Math.min(cx,cy) - 30;
+  let PLANE_R = state.planeR;
+  const scale = viewR / PLANE_R;
+
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  const o = off.getContext('2d');
+  o.imageSmoothingEnabled = false;
+  o.fillStyle = COL.bg; o.fillRect(0,0,W,H);
+
+  // domain coloring layer
+  drawDomainColoring(cx, cy, scale, PLANE_R, o);
+
+  // grid circles
+  o.strokeStyle = 'rgba(255,255,255,0.12)'; o.lineWidth = 0.5;
+  for (let r = 1; r <= PLANE_R; r++) {
+    o.beginPath(); o.arc(cx,cy,r*scale,0,2*Math.PI); o.stroke();
+    o.fillStyle='rgba(255,255,255,0.45)'; o.font='9px "JetBrains Mono",monospace';
+    o.fillText(r, cx+r*scale+2, cy-2);
+  }
+  o.strokeStyle='rgba(255,255,255,0.18)'; o.lineWidth=0.8;
+  o.beginPath(); o.moveTo(cx-viewR,cy); o.lineTo(cx+viewR,cy);
+  o.moveTo(cx,cy-viewR); o.lineTo(cx,cy+viewR); o.stroke();
+  o.fillStyle='rgba(255,255,255,0.45)'; o.font='10px "JetBrains Mono",monospace';
+  o.fillText('Re(w)', cx+viewR-36, cy-6);
+  o.fillText('Im', cx+4, cy-viewR+12);
+
+  // image path
+  if (wpts.length > 1) {
+    o.setLineDash([5,4]); o.strokeStyle='#fff'; o.lineWidth=2.2;
+    o.beginPath(); let first=true, prevWx=null, prevWy=null;
+    for (const [wx,wy] of wpts) {
+      if (Math.sqrt(wx*wx+wy*wy) > PLANE_R * 1.5) { first=true; prevWx=null; continue; }
+      if (prevWx !== null) {
+        const ddx=wx-prevWx, ddy=wy-prevWy;
+        if (Math.sqrt(ddx*ddx+ddy*ddy) > PLANE_R * 0.5) { first=true; }
+      }
+      const px=cx+wx*scale, py=cy-wy*scale;
+      if(first){o.moveTo(px,py);first=false;}else o.lineTo(px,py);
+      prevWx=wx; prevWy=wy;
+    }
+    o.stroke(); o.setLineDash([]);
+  }
+  o.beginPath(); o.arc(cx,cy,4,0,2*Math.PI); o.fillStyle=COL.south; o.fill();
+  o.fillStyle=COL.accent; o.font='italic 15px "EB Garamond",serif';
+  const labels2={inv1:'f(z) = 1/z',inv4:'f(z) = 1/z⁴',inv20:'f(z) = 1/z²⁰',
+    exp:'f(z) = e^(1/z)',log:'f(z) = Log(z)',sinz:'f(z) = 1/sin(z)', sin1z:'f(z) = sin(1/z)',
+    twopoles:'f(z) = 1/(z(z−1))', gamma:'f(z) = Γ(z)', sinc:'f(z) = sin(z)/z',
+    laurent:`f(z) = Σ_{k=0}^{${state.terms}} 1/(k! zᵏ)  [N = ${state.terms}]`};
+  o.fillText(labels2[state.fn]||'', 18, 24);
+  o.fillStyle=COL.muted; o.font='10px "JetBrains Mono",monospace';
+  const pathLabel2 = state.input === 'mma' ? `mma path  t∈[0,${state.tmax}]` : 'image of spiral';
+  o.fillText(`w-plane  (${pathLabel2})  |w| ≤ ${PLANE_R}  [domain coloring]`, 12, 38);
+
+  // z-plane inset
+  const ix=IX,iy=IY,ir=IR;
+  const iRadii = spiral.map(([zx2,zy2])=>Math.sqrt(zx2*zx2+zy2*zy2)).sort((a,b)=>a-b);
+  let iRefR;
+  if (state.input === 'mma') {
+    const rMin = iRadii[0] || 0.01;
+    iRefR = rMin / 0.15;
+  } else {
+    iRefR = iRadii[Math.floor(iRadii.length*0.8)] || 1;
+  }
+  const iScale2 = (ir*0.85) / iRefR;
+  _insetScale = iScale2;
+  o.fillStyle='#131311'; o.fillRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
+  o.strokeStyle='#2a2a26'; o.lineWidth=0.5; o.strokeRect(ix-ir-14,iy-ir-14,2*ir+28,2*ir+28);
+  o.strokeStyle='#2e2e2a'; o.lineWidth=0.5;
+  o.beginPath(); o.moveTo(ix-ir-4,iy); o.lineTo(ix+ir+4,iy);
+  o.moveTo(ix,iy-ir-4); o.lineTo(ix,iy+ir+4); o.stroke();
+  o.fillStyle=COL.muted; o.font='10px "JetBrains Mono",monospace';
+  o.fillText('z',ix-ir-10,iy-ir-4);
+  o.beginPath(); let sf=true;
+  for(const [zx3,zy3] of spiral){const px=ix+iScale2*zx3,py=iy-iScale2*zy3;if(sf){o.moveTo(px,py);sf=false;}else o.lineTo(px,py);}
+  o.strokeStyle=COL.spiral; o.lineWidth=1.3; o.stroke();
+  o.beginPath(); o.arc(ix,iy,4,0,2*Math.PI); o.fillStyle=COL.south; o.fill();
+
+  // replace cache's off canvas
+  if (_planeCache) _planeCache.off = off;
+}
+
+// ── keyboard shortcuts ────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (state.input !== 'monte') setPlaying(!animState.playing);
+  }
+  // arrow left/right: step through functions
+  const fnKeys = ['inv1','sinz','inv4','inv20','exp','sin1z','laurent','log','twopoles','gamma','sinc'];
+  if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
+    const idx = fnKeys.indexOf(state.fn);
+    const next = e.code === 'ArrowRight'
+      ? fnKeys[(idx+1)%fnKeys.length]
+      : fnKeys[(idx-1+fnKeys.length)%fnKeys.length];
+    setPlaying(false);
+    state.fn = next;
+    const sel = document.getElementById('fn-select');
+    if (sel) sel.value = next;
+    updateFnDesc();
+    state._planeRAutofit = true; _planeCache = null;
+    render(animState.phase);
+  }
+  // [ ] for turns
+  if (e.code === 'BracketLeft') {
+    state.turns = Math.max(1, state.turns - 0.5);
+    const el=document.getElementById('turns'); if(el){el.value=state.turns;document.getElementById('turns-out').textContent=state.turns;}
+    _planeCache=null; render(animState.phase);
+  }
+  if (e.code === 'BracketRight') {
+    state.turns = Math.min(7, state.turns + 0.5);
+    const el=document.getElementById('turns'); if(el){el.value=state.turns;document.getElementById('turns-out').textContent=state.turns;}
+    _planeCache=null; render(animState.phase);
+  }
+});
+
+// hint text in subtitle
+document.querySelector('.subtitle').insertAdjacentHTML('afterend',
+  '<p style="margin-top:0.35rem;font-size:0.78rem;font-family:\'JetBrains Mono\',monospace;color:#4a4840;text-align:center">drag sphere to rotate · space = play/pause · ← → keys cycle functions · [ ] adjust turns</p>'
+);
 </script>
 </body>
 </html>
